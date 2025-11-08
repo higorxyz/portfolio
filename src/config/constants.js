@@ -1,6 +1,6 @@
 export const CV_CONFIG = {
   fileName: 'Higor Batista - Curriculo Profissional.pdf',
-  path: '/assets/cv/'
+  path: '/cv/'
 };
 
 export const GITHUB_CONFIG = {
