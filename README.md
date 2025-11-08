@@ -45,8 +45,8 @@
 
 ```bash
 # Clone o repositório
-git clone https://github.com/higorxyz/repo.git
-cd repo
+git clone https://github.com/higorxyz/portfolio.git
+cd portfolio
 
 # Instale as dependências
 npm install
@@ -136,3 +136,4 @@ colors: {
 **Desenvolvido com 💜 por Higor Batista**
 
 </div>
+

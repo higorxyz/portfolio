@@ -133,7 +133,7 @@ const translations = {
     'readme.close': 'Fechar (ESC)',
     
     'skills.title': 'Habilidades',
-    'skills.subtitle': 'Tecnologias que domino',
+    'skills.subtitle': 'Tecnologias com as quais trabalho atualmente',
     'skills.basedOn': '(Baseado nos meus repositórios)',
     'skills.frontend': 'Frontend',
     'skills.backend': 'Backend',
@@ -278,7 +278,7 @@ const translations = {
     'readme.close': 'Close (ESC)',
     
     'skills.title': 'Skills',
-    'skills.subtitle': 'Technologies I master',
+    'skills.subtitle': 'Technologies I currently work with',
     'skills.basedOn': '(Based on my repositories)',
     'skills.frontend': 'Frontend',
     'skills.backend': 'Backend',

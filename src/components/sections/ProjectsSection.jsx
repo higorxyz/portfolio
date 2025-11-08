@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { Briefcase, Filter, Star, GitFork, Github, ExternalLink } from 'lucide-react';
-import { Code } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useProjectFilters } from '../../hooks/useProjectFilters';
 import { ProjectCardSkeleton } from '../ui';
 import { SearchBar } from '../forms';
 import { ReadmeViewer } from '../modals';
 import { ContributionGraph } from '.';
+import { getLanguageColor } from '../../utils/languageColors';
+import { getLanguageIcon } from '../../utils/languageIcons';
 
 export const ProjectsSection = ({ projects, loading, onSelectProject, username = 'higorxyz' }) => {
   const { t } = useLanguage();
@@ -63,7 +64,7 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
         {!loading && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {filteredProjects.map((project, index) => {
-              const ProjectIcon = project.icon || Code;
+              const ProjectIcon = getLanguageIcon(project.language);
               return (
                 <div
                   key={`${project.repoName}-${index}`}
@@ -74,9 +75,16 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
                 >
                   <div className="flex justify-between items-start mb-3 sm:mb-4">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <ProjectIcon size={40} className="text-purple-300 sm:w-10 sm:h-10 w-9 h-9 group-hover:scale-125 transition-transform" />
+                      <ProjectIcon 
+                        size={40} 
+                        className="sm:w-10 sm:h-10 w-9 h-9 group-hover:scale-125 transition-transform" 
+                        style={{ color: getLanguageColor(project.language) }}
+                      />
                       <div>
-                        <span className="text-purple-300 font-semibold text-xs sm:text-sm">
+                        <span 
+                          className="font-semibold text-xs sm:text-sm"
+                          style={{ color: getLanguageColor(project.language) }}
+                        >
                           {project.language || 'Code'}
                         </span>
                       </div>
