@@ -138,11 +138,6 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
       const requestFallback = async () => {
         try {
           const headers = {};
-          const token = import.meta.env.VITE_GITHUB_TOKEN;
-          
-          if (token && token !== 'your_github_token_here') {
-            headers['Authorization'] = `Bearer ${token}`;
-          }
 
           const response = await fetch(
             `https://api.github.com/users/${username}/events/public?per_page=100`,
@@ -452,4 +447,3 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
     </div>
   );
 };
-

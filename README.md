@@ -42,18 +42,18 @@
 
 ## 🔌 Arquitetura da API
 
-O front-end **não** chama `api.github.com` diretamente do navegador. Antes disso quebrava em rede compartilhada (faculdade, empresa): o GitHub limita a 60 requisições/hora **por IP**, e todo mundo naquela rede compartilha o mesmo IP de saída.
+O front-end **não** chama `api.github.com` diretamente do navegador. O GitHub limita a 60 requisições/hora **por IP**, e em rede compartilhada (faculdade, empresa) todo mundo naquela rede divide o mesmo IP de saída — a seção de projetos quebraria para todos ao mesmo tempo.
 
-Agora existem duas Vercel Serverless Functions em `/api` que funcionam como proxy:
+Em vez disso, duas Vercel Serverless Functions em `/api` funcionam como proxy:
 
-| Rota | Função | Cache |
+| Rota | Função | Cache (CDN da Vercel) |
 |---|---|---|
-| `GET /api/github-stats` | Busca perfil + repositórios do GitHub | 5 min (CDN da Vercel) |
-| `GET /api/github-readme?repo=nome` | Busca o README de um repositório específico | 10 min (CDN da Vercel) |
+| `GET /api/github-stats` | Busca perfil + repositórios do GitHub | 5 min (+1 min stale-while-revalidate) |
+| `GET /api/github-readme?repo=nome` | Busca o README de um repositório específico | 10 min (+2 min stale-while-revalidate) |
 
 Essas funções rodam no servidor, então:
-- Um token do GitHub (opcional, mas recomendado) pode ser usado sem nunca ser exposto no bundle do cliente.
-- N visitantes = 1 chamada real à API do GitHub, graças ao cache na CDN.
+- Um token do GitHub (opcional, mas recomendado) pode ser usado sem nunca ser exposto no bundle do cliente — sem token o proxy ainda funciona, só com o limite de 60 req/hora em vez de 5.000.
+- N visitantes = 1 chamada real à API do GitHub, graças ao cache.
 
 ⚠️ **`npm run dev` (Vite puro) não serve `/api`.** Para testar essas funções localmente, use `vercel dev`, ou confie no ambiente de preview/produção da Vercel.
 
@@ -77,17 +77,20 @@ npm run dev
 
 ### Variáveis de ambiente
 
-Configure em `.env` (local) ou em Project → Settings → Environment Variables (Vercel):
+Copie `.env.example` para `.env` (local) ou configure em Project → Settings → Environment Variables (Vercel):
 
 ```bash
-# GitHub API (opcional, mas recomendado — evita rate limit compartilhado)
-# NUNCA prefixar com VITE_, ou o token vaza no bundle do cliente
-GITHUB_TOKEN=seu_token_aqui
+# EmailJS (formulário de contato) — client-side, prefixo VITE_ obrigatório
+VITE_EMAILJS_SERVICE_ID=
+VITE_EMAILJS_TEMPLATE_ID=
+VITE_EMAILJS_PUBLIC_KEY=
 
-# EmailJS (obrigatório para o formulário de contato funcionar)
-VITE_EMAILJS_SERVICE_ID=seu_service_id
-VITE_EMAILJS_TEMPLATE_ID=seu_template_id
-VITE_EMAILJS_PUBLIC_KEY=sua_public_key
+# GitHub — usado só pelas serverless functions em /api (server-side).
+# Sem prefixo VITE_ de propósito: mantém o valor fora do bundle do client.
+# Opcional, mas recomendado (veja tabela de limites acima).
+# Gerar em: https://github.com/settings/tokens (classic, sem escopo nenhum
+# marcado — só precisa ler dados públicos)
+GITHUB_TOKEN=
 ```
 
 ---
@@ -101,16 +104,16 @@ api/                          # Vercel Serverless Functions (proxy + cache da Gi
 
 src/
 ├── components/
-│   ├── common/               # LoadingScreen, Portal
-│   ├── forms/                # SearchBar
-│   ├── modals/                # ProjectModal, ReadmeViewer, CVPreviewModal
-│   ├── navigation/            # NavigationBar, ThemeToggle, LanguageToggle
-│   ├── sections/               # Hero, Projects, ContributionGraph, etc.
-│   └── ui/                     # Skeleton e componentes visuais
-├── config/                     # EmailJS, constantes (CV, GitHub, temas, idiomas)
+│   ├── common/                # LoadingScreen, Portal
+│   ├── forms/                 # SearchBar
+│   ├── modals/                 # ProjectModal, ReadmeViewer, CVPreviewModal
+│   ├── navigation/             # NavigationBar, ThemeToggle, LanguageToggle
+│   ├── sections/                # Hero, Stats, About, Projects, Skills, Contact, ContributionGraph
+│   └── ui/                       # Skeleton e componentes visuais
+├── config/                      # EmailJS, constantes (CV, GitHub, temas, idiomas)
 ├── contexts/
-│   ├── LanguageContext.js/.jsx  # Contexto e Provider de idioma
-│   └── ThemeContext.js/.jsx     # Contexto e Provider de tema
+│   ├── LanguageContext.js/.jsx   # Contexto e Provider de idioma
+│   └── ThemeContext.js/.jsx      # Contexto e Provider de tema
 ├── hooks/
 │   ├── useGitHubData.js
 │   ├── useLanguage.js
@@ -118,10 +121,12 @@ src/
 │   ├── useProjectFilters.js
 │   ├── useBodyScrollLock.js
 │   ├── useCounter.js
-│   ├── useIntersectionObserver.js
-│   └── outros hooks utilitários
-├── styles/                     # CSS global, tema e Tailwind
-└── App.jsx / main.jsx          # Entrada da aplicação
+│   └── useIntersectionObserver.js
+├── utils/                        # githubApi, languageColors, languageIcons
+├── styles/
+│   ├── index.css                 # entrada Tailwind + estilos do README renderizado
+│   └── theme.css                 # design tokens (@theme) do tema Blueprint ativo
+└── App.jsx / main.jsx            # Entrada da aplicação
 ```
 
 ---
@@ -135,9 +140,9 @@ export const GITHUB_CONFIG = {
   apiUrl: 'https://api.github.com'
 };
 ```
-> Nota: o `api/github-stats.js` e o `api/github-readme.js` também têm o username fixo no topo do arquivo (`GITHUB_USERNAME`) — ajuste nos dois lugares.
+> Nota: `api/github-stats.js` e `api/github-readme.js` também têm o username fixo no topo do arquivo (`GITHUB_USERNAME`) — ajuste nos três lugares.
 
-**Alterar cores:** a partir do Tailwind CSS 4 não há mais `tailwind.config.js` — as cores de destaque (roxo/rosa) estão nas classes utilitárias diretamente nos componentes (ex.: `from-purple-500`, `text-accent-signal`), e as cores de tema claro/escuro ficam em `src/styles/theme.css` como variáveis CSS.
+**Alterar cores:** o Tailwind CSS 4 não usa mais `tailwind.config.js` — os design tokens ficam em `src/styles/theme.css`, dentro do bloco `@theme`. As cores de destaque atuais são laranja (`--color-accent-signal`, `#ff6b35`) e verde-água (`--color-accent-trace`, `#4fd1c5`), sobre um fundo azul-escuro/claro que muda por tema (`--bg-primary-value` em `:root` e em `.light-theme`).
 
 **Adicionar idiomas** em `src/contexts/LanguageContext.jsx`
 
