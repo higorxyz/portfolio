@@ -5,7 +5,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 
-export const ReadmeViewer = ({ username, repoName, description, projectTitle }) => {
+export const ReadmeViewer = ({ repoName, description, projectTitle }) => {
   const { theme } = useTheme();
   const { t } = useLanguage();
   const isDarkMode = theme === 'dark';
@@ -19,23 +19,15 @@ export const ReadmeViewer = ({ username, repoName, description, projectTitle }) 
   useEffect(() => {
     setReadme(null);
     setError(false);
-  }, [username, repoName]);
+  }, [repoName]);
 
   const fetchReadme = async () => {
     setLoading(true);
     try {
-      const headers = {
-        Accept: 'application/vnd.github.v3.html'
-      };
-      
-      const token = import.meta.env.VITE_GITHUB_TOKEN;
-      if (token && token !== 'your_github_token_here') {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
+      // Antes batia direto em api.github.com/repos/.../readme do navegador.
+      // Agora passa por /api/github-readme, que roda no servidor e cacheia.
       const response = await fetch(
-        `https://api.github.com/repos/${username}/${repoName}/readme`,
-        { headers }
+        `/api/github-readme?repo=${encodeURIComponent(repoName)}`
       );
 
       if (!response.ok) {
@@ -99,23 +91,21 @@ export const ReadmeViewer = ({ username, repoName, description, projectTitle }) 
   }, [isModalOpen]);
 
   if (!repoName) {
-    return <p className="text-gray-400 text-sm">{description}</p>;
+    return <p className="text-text-secondary text-sm">{description}</p>;
   }
 
   return (
     <>
       <div className="space-y-2">
         {description && description !== 'Projeto desenvolvido no GitHub' && (
-          <p className="text-gray-400 text-sm">{description}</p>
+          <p className="text-text-secondary text-sm">{description}</p>
         )}
 
         <button
           onClick={handleOpenModal}
-          className="
-            flex items-center gap-2 text-sm
-            text-purple-400 hover:text-purple-300
-            transition-colors duration-200
-          "
+          className="flex items-center gap-2 text-sm
+ text-accent-trace hover:text-accent-trace
+ transition-colors duration-200"
         >
           <FileText className="w-4 h-4" />
           <span>{t('readme.viewFull')}</span>
@@ -126,53 +116,40 @@ export const ReadmeViewer = ({ username, repoName, description, projectTitle }) 
         <Portal>
           <div 
             className={`fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-8 backdrop-blur-[2px] animate-fadeIn ${
-              isDarkMode ? 'bg-black/70' : 'bg-white/75'
+              'bg-black/70'
             }`}
             onClick={handleCloseModal}
           >
             <div 
               className={`
                 relative w-full h-full max-w-6xl
-                backdrop-blur-xl 
-                border-2 
-                rounded-3xl 
+                 
+                border
+                rounded-lg
                 shadow-2xl 
                 overflow-hidden
                 animate-scaleIn
-                ${isDarkMode ? 'bg-black/80 border-purple-500/40 shadow-purple-500/30' : 'bg-white border-purple-400 shadow-purple-400/30'}
+                bg-bg-surface border-line
               `}
               onClick={(e) => e.stopPropagation()}
             >
             {/* Header do Modal */}
-            <div className={`sticky top-0 z-10 backdrop-blur-xl border-b-2 p-6 sm:p-8 ${
-              isDarkMode 
-                ? 'bg-gradient-to-r from-purple-900/50 to-pink-900/30 border-purple-500/40' 
-                : 'bg-gradient-to-r from-purple-800/85 to-pink-800/65 border-purple-800'
-            }`}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className={`p-3 rounded-xl ${isDarkMode ? 'bg-purple-500/20' : 'bg-purple-900/50'}`}>
-                    <FileText className={`w-7 h-7 ${isDarkMode ? 'text-purple-400' : 'text-white'}`} />
+            <div className="sticky top-0 z-10 border-b border-line p-4 sm:p-5 bg-bg-surface">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="p-2 flex-shrink-0 text-accent-trace">
+                    <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <div>
-                    <h3 className={`text-2xl sm:text-3xl font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-white'}`}>
+                  <div className="min-w-0">
+                    <h3 className="text-lg sm:text-2xl font-bold mb-1 text-text-primary truncate">
                       {projectTitle || 'README'}
                     </h3>
-                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-purple-50'}`}>{t('readme.title')}</p>
+                    <p className="text-xs sm:text-sm text-accent-trace">{t('readme.title')}</p>
                   </div>
                 </div>
                 <button
                   onClick={handleCloseModal}
-                  className={`
-                    p-3 rounded-xl
-                    transition-all duration-200
-                    hover:scale-110
-                    border
-                    ${isDarkMode 
-                      ? 'bg-purple-500/20 hover:bg-red-500/30 text-purple-300 hover:text-red-300 border-purple-500/30 hover:border-red-500/50' 
-                      : 'bg-white/25 hover:bg-red-600/60 text-white hover:text-red-50 border-white/40 hover:border-red-600/80'
-                    }
-                  `}
+                  className="w-9 h-9 flex items-center justify-center rounded-lg transition-colors hover:bg-bg-surface-hover text-text-secondary hover:text-accent-signal"
                   title={t('readme.close')}
                 >
                   <X className="w-6 h-6" />
@@ -181,25 +158,21 @@ export const ReadmeViewer = ({ username, repoName, description, projectTitle }) 
             </div>
 
             {/* Conteúdo do Modal */}
-            <div className={`overflow-y-auto h-[calc(100%-120px)] p-6 sm:p-8 ${isDarkMode ? 'bg-transparent' : 'bg-gray-50'}`}>
+            <div className="overflow-y-auto h-[calc(100%-82px)] p-4 sm:p-6 md:p-8 bg-bg-primary">
               {loading && (
-                <div className={`flex flex-col items-center justify-center gap-4 py-32 ${isDarkMode ? 'text-gray-400' : 'text-gray-700'}`}>
-                  <Loader className={`w-12 h-12 animate-spin ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+                <div className={`flex flex-col items-center justify-center gap-4 py-32 ${isDarkMode ? 'text-text-secondary' : 'text-gray-700'}`}>
+                  <Loader className={`w-12 h-12 animate-spin ${isDarkMode ? 'text-accent-trace' : 'text-accent-trace'}`} />
                   <span className="text-lg">{t('readme.loading')}</span>
                 </div>
               )}
 
               {error && !loading && (
-                <div className="text-center py-32">
-                  <div className={`inline-block p-6 rounded-2xl border ${
-                    isDarkMode 
-                      ? 'bg-yellow-500/10 border-yellow-500/30' 
-                      : 'bg-yellow-400/30 border-yellow-500/50'
-                  }`}>
-                    <p className={`text-2xl mb-3 ${isDarkMode ? 'text-yellow-400' : 'text-yellow-800'}`}>
-                      ⚠️ {t('readme.notAvailable')}
+                <div className="text-center py-24">
+                  <div className="inline-block p-6 border border-line bg-bg-surface">
+                    <p className="text-base mb-3 text-accent-signal">
+                      {t('readme.notAvailable')}
                     </p>
-                    <p className={isDarkMode ? 'text-gray-400' : 'text-gray-800'}>
+                    <p className="text-sm text-text-secondary">
                       {t('readme.noFile')}
                     </p>
                   </div>
@@ -207,11 +180,7 @@ export const ReadmeViewer = ({ username, repoName, description, projectTitle }) 
               )}
 
               {readme && !loading && (
-                <div className={`rounded-2xl p-6 sm:p-8 border ${
-                  isDarkMode 
-                    ? 'bg-black/30 border-purple-500/20' 
-                    : 'bg-white border-purple-400/40'
-                }`}>
+                <div className="max-w-4xl mx-auto border border-line bg-bg-surface p-5 sm:p-8">
                   <div 
                     className={`readme-content prose max-w-none ${isDarkMode ? 'dark-theme' : ''}`}
                     dangerouslySetInnerHTML={{ __html: readme }}

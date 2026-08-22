@@ -36,21 +36,24 @@ export const ContactSection = () => {
   return (
     <section id="contato" className="py-12 sm:py-16 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-          <Mail className="text-purple-500 w-6 h-6 sm:w-8 sm:h-8" size={32} />
-          <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-            {t('contact.title')}
-          </h3>
-        </div>
-        <p className="text-center text-gray-300 text-sm sm:text-base md:text-lg mb-6 sm:mb-10 max-w-2xl mx-auto leading-relaxed px-4">
+        <div className="mb-8 sm:mb-10">
+          <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
+            <span className="font-mono text-xs text-accent-signal">04 /</span>
+            <Mail className="text-accent-trace w-5 h-5 sm:w-6 sm:h-6" />
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary">
+              {t('contact.title')}
+            </h3>
+          </div>
+        <p className="text-center sm:text-left text-text-secondary text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl sm:pl-11 leading-relaxed px-4 sm:px-0">
           {t('contact.subtitle')}
         </p>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto mb-6 sm:mb-10">
-          <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-6 rounded-xl sm:rounded-2xl">
+          <div className="bg-bg-surface border border-line border-l-2 border-l-accent-signal p-4 sm:p-6 rounded-r-lg">
             <form onSubmit={handleFormSubmit} className="space-y-4 sm:space-y-5">
               <div>
-                <label htmlFor="name" className="block text-gray-300 font-semibold text-sm mb-2">
+                <label htmlFor="name" className="block text-text-secondary font-semibold text-sm mb-2">
                   {t('contact.form.name')}
                 </label>
                 <input
@@ -61,11 +64,11 @@ export const ContactSection = () => {
                   onChange={handleFormChange}
                   placeholder={t('contact.form.name')}
                   required
-                  className="card-motion-input w-full bg-black/30 border border-purple-500/30 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-purple-500 focus:shadow-lg focus:shadow-purple-500/30"
+                  className="card-motion-input w-full bg-bg-primary/50 border border-line text-text-primary px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-line focus:shadow-lg focus:"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-gray-300 font-semibold text-sm mb-2">
+                <label htmlFor="email" className="block text-text-secondary font-semibold text-sm mb-2">
                   {t('contact.form.email')}
                 </label>
                 <input
@@ -76,11 +79,11 @@ export const ContactSection = () => {
                   onChange={handleFormChange}
                   placeholder={t('contact.form.email')}
                   required
-                  className="card-motion-input w-full bg-black/30 border border-purple-500/30 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-purple-500 focus:shadow-lg focus:shadow-purple-500/30"
+                  className="card-motion-input w-full bg-bg-primary/50 border border-line text-text-primary px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-line focus:shadow-lg focus:"
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block text-gray-300 font-semibold text-sm mb-2">
+                <label htmlFor="message" className="block text-text-secondary font-semibold text-sm mb-2">
                   {t('contact.form.message')}
                 </label>
                 <textarea
@@ -91,13 +94,13 @@ export const ContactSection = () => {
                   placeholder={t('contact.form.message')}
                   rows="5"
                   required
-                  className="card-motion-input w-full bg-black/30 border border-purple-500/30 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-purple-500 focus:shadow-lg focus:shadow-purple-500/30 resize-none"
+                  className="card-motion-input w-full bg-bg-primary/50 border border-line text-text-primary px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-line focus:shadow-lg focus: resize-none"
                 />
               </div>
               <button
                 type="submit"
                 disabled={formStatus === 'sending'}
-                className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-xl shadow-purple-500/50 disabled:opacity-60"
+                className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-accent-signal rounded-lg font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform shadow-xl disabled:opacity-60"
               >
                 {formStatus === 'sending' ? (
                   <>
@@ -107,7 +110,7 @@ export const ContactSection = () => {
                 ) : formStatus === 'success' ? (
                   <>{t('contact.form.success')}</>
                 ) : formStatus === 'error' ? (
-                  <>❌ Erro ao enviar</>
+                  <>{t('contact.form.errorShort')}</>
                 ) : (
                   <>
                     <Send size={16} className="sm:w-[18px] sm:h-[18px]" />
@@ -117,42 +120,50 @@ export const ContactSection = () => {
               </button>
               {formStatus === 'success' && (
                 <p className="text-green-400 text-center font-semibold text-sm">
-                  Mensagem enviada com sucesso! 🎉
+                  {t('contact.form.success')}
                 </p>
               )}
               {formStatus === 'error' && (
                 <p className="text-red-400 text-center font-semibold text-sm">
-                  Erro ao enviar mensagem. Tente novamente! ❌
+                  {t('contact.form.error')}
                 </p>
               )}
             </form>
           </div>
 
-          <div className="space-y-4 sm:space-y-5">
-            <div className="card-motion bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-6 rounded-xl sm:rounded-2xl hover:-translate-y-2 text-center">
-              <Mail className="text-purple-500 w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 sm:mb-3" />
-              <h4 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">{t('contact.email')}</h4>
-              <p className="text-gray-400 text-xs sm:text-sm">dev.higorxyz@gmail.com</p>
+          <div className="border-t border-line">
+            <div className="flex items-start gap-4 py-5 border-b border-line">
+              <Mail className="text-accent-trace w-5 h-5 mt-1 shrink-0" />
+              <div>
+                <h4 className="font-bold text-base mb-1">{t('contact.email')}</h4>
+                <p className="text-text-secondary text-sm">dev.higorxyz@gmail.com</p>
+              </div>
             </div>
-            <div className="card-motion bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-6 rounded-xl sm:rounded-2xl hover:-translate-y-2 text-center">
-              <Globe className="text-purple-500 w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 sm:mb-3" />
-              <h4 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">{t('contact.location')}</h4>
-              <p className="text-gray-400 text-xs sm:text-sm">{t('contact.locationValue')}</p>
+            <div className="flex items-start gap-4 py-5 border-b border-line">
+              <Globe className="text-accent-trace w-5 h-5 mt-1 shrink-0" />
+              <div>
+                <h4 className="font-bold text-base mb-1">{t('contact.location')}</h4>
+                <p className="text-text-secondary text-sm">{t('contact.locationValue')}</p>
+              </div>
             </div>
-            <div className="card-motion bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-6 rounded-xl sm:rounded-2xl hover:-translate-y-2 text-center">
-              <Zap className="text-purple-500 w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 sm:mb-3" />
-              <h4 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">{t('contact.response')}</h4>
-              <p className="text-gray-400 text-xs sm:text-sm">{t('contact.responseTime')}</p>
+            <div className="flex items-start gap-4 py-5 border-b border-line">
+              <Zap className="text-accent-signal w-5 h-5 mt-1 shrink-0" />
+              <div>
+                <h4 className="font-bold text-base mb-1">{t('contact.response')}</h4>
+                <p className="text-text-secondary text-sm">{t('contact.responseTime')}</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-4 sm:gap-6 justify-center flex-wrap">
+        <div className="max-w-5xl mx-auto flex items-center gap-5 sm:gap-7 justify-end flex-wrap">
+          <span className="font-mono text-xs text-text-secondary">{t('contact.social')}</span>
           <a
             href="https://github.com/higorxyz"
             target="_blank"
             rel="noopener noreferrer"
-            className="card-motion w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-500/20 to-purple-500/5 backdrop-blur-xl border border-purple-500/30 rounded-xl sm:rounded-2xl flex items-center justify-center hover:scale-110 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/50"
+            aria-label="GitHub"
+            className="card-motion w-11 h-11 bg-bg-surface border border-line rounded-lg flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
             <SiGithub size={28} className="sm:w-8 sm:h-8" />
           </a>
@@ -160,7 +171,8 @@ export const ContactSection = () => {
             href="https://www.linkedin.com/in/higorbatista"
             target="_blank"
             rel="noopener noreferrer"
-            className="card-motion w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-500/20 to-blue-500/5 backdrop-blur-xl border border-blue-500/30 rounded-xl sm:rounded-2xl flex items-center justify-center hover:scale-110 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/50"
+            aria-label="LinkedIn"
+            className="card-motion w-11 h-11 bg-bg-surface border border-line rounded-lg flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
             <SiLinkedin size={28} className="sm:w-8 sm:h-8" />
           </a>
@@ -168,7 +180,8 @@ export const ContactSection = () => {
             href="https://www.instagram.com/higorxyz/"
             target="_blank"
             rel="noopener noreferrer"
-            className="card-motion w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-pink-500/20 to-pink-500/5 backdrop-blur-xl border border-pink-500/30 rounded-xl sm:rounded-2xl flex items-center justify-center hover:scale-110 hover:-translate-y-2 hover:shadow-2xl hover:shadow-pink-500/50"
+            aria-label="Instagram"
+            className="card-motion w-11 h-11 bg-bg-surface border border-line rounded-lg flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
             <SiInstagram size={28} className="sm:w-8 sm:h-8" />
           </a>

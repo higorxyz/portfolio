@@ -24,18 +24,18 @@ export const SearchBar = ({ onSearch, totalResults, placeholder }) => {
         <div
           className={`
             relative flex items-center gap-3 
-            bg-black/30 backdrop-blur-xl 
-            border border-purple-500/30 
+            bg-bg-primary  
+            border border-line 
             rounded-xl px-4 py-3
             transition-all duration-300 card-motion-input
-            ${isFocused ? 'shadow-subtle-xl border-purple-500/60' : 'shadow-subtle'}
+            ${isFocused ? 'shadow-subtle-xl border-line' : 'shadow-subtle'}
           `}
         >
           {/* Ícone de busca */}
           <Search 
             className={`
               w-5 h-5 transition-colors duration-300
-              ${isFocused || searchTerm ? 'text-purple-400' : 'text-gray-400'}
+              ${isFocused || searchTerm ? 'text-accent-trace' : 'text-text-secondary'}
             `}
           />
 
@@ -47,23 +47,19 @@ export const SearchBar = ({ onSearch, totalResults, placeholder }) => {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             placeholder={placeholder || t('projects.search')}
-            className="
-              flex-1 bg-transparent 
-              text-white placeholder-gray-400
-              outline-none text-sm
-            "
+            className="flex-1 bg-transparent 
+ text-text-primary placeholder-gray-400
+ outline-none text-sm"
           />
 
           {/* Botão de limpar */}
           {searchTerm && (
             <button
               onClick={clearSearch}
-              className="
-                p-1 rounded-lg
-                bg-purple-500/20 hover:bg-purple-500/30
-                text-purple-300 hover:text-purple-200
-                transition-all duration-200
-              "
+              className="p-1 rounded-lg
+ bg-bg-surface hover:bg-bg-surface
+ text-accent-trace hover:text-accent-trace
+ transition-all duration-200"
             >
               <X className="w-4 h-4" />
             </button>
@@ -73,13 +69,13 @@ export const SearchBar = ({ onSearch, totalResults, placeholder }) => {
         {/* Indicador de resultados */}
         {searchTerm && (
           <div className="mt-2 text-center">
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-text-secondary">
               {totalResults === 0 ? (
                 <span className="text-yellow-400">{t('projects.noResults')}</span>
               ) : totalResults === 1 ? (
-                <span className="text-purple-400">{t('projects.oneResult')}</span>
+                <span className="text-accent-trace">{t('projects.oneResult')}</span>
               ) : (
-                <span className="text-purple-400">{t('projects.multipleResults').replace('{count}', totalResults)}</span>
+                <span className="text-accent-trace">{t('projects.multipleResults').replace('{count}', totalResults)}</span>
               )}
             </span>
           </div>
@@ -88,9 +84,9 @@ export const SearchBar = ({ onSearch, totalResults, placeholder }) => {
 
       {/* Dicas de busca */}
       {isFocused && !searchTerm && (
-        <div className="mt-4 p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg backdrop-blur-xl">
-          <p className="text-xs text-gray-400 mb-2">{t('projects.searchTips')}</p>
-          <ul className="text-xs text-gray-500 space-y-1">
+        <div className="mt-4 p-4 bg-bg-surface border border-line rounded-lg">
+          <p className="text-xs text-text-secondary mb-2">{t('projects.searchTips')}</p>
+          <ul className="text-xs text-text-secondary space-y-1">
             <li>{t('projects.tip1')}</li>
             <li>{t('projects.tip2')}</li>
             <li>{t('projects.tip3')}</li>

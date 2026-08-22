@@ -37,25 +37,25 @@ const LanguageToggle = () => {
       {/* Botão principal */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all duration-200 hover:scale-105 ${
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors duration-200 ${
           isDark
-            ? 'bg-purple-500/20 hover:bg-purple-500/30 border-purple-500/30'
-            : 'bg-purple-100 hover:bg-purple-200 border-purple-300'
+            ? 'bg-bg-surface hover:bg-bg-surface border-line'
+            : 'bg-bg-surface hover:bg-bg-surface border-line'
         }`}
-        aria-label="Select language"
+        aria-label={language === 'pt' ? 'Selecionar idioma' : 'Select language'}
       >
-        <Globe size={14} className={isDark ? 'text-purple-400' : 'text-purple-600'} />
-        <span className={`text-sm font-semibold ${isDark ? 'text-purple-300' : 'text-purple-700'}`}>
+        <Globe size={14} className={isDark ? 'text-accent-trace' : 'text-accent-trace'} />
+        <span className={`text-sm font-semibold ${isDark ? 'text-accent-trace' : 'text-accent-trace'}`}>
           {language.toUpperCase()}
         </span>
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className={`absolute top-full mt-2 right-0 w-36 backdrop-blur-xl border rounded-lg shadow-2xl overflow-hidden z-50 animate-fadeIn ${
+        <div className={`absolute top-full mt-2 right-0 w-36  border rounded-lg shadow-2xl overflow-hidden z-50 animate-fadeIn ${
           isDark
-            ? 'bg-black/95 border-purple-500/30 shadow-purple-500/20'
-            : 'bg-white border-purple-300 shadow-purple-200/50'
+            ? 'bg-bg-primary border-line '
+            : 'bg-white border-line '
         }`}>
           {languages.map((lang) => (
             <button
@@ -67,21 +67,21 @@ const LanguageToggle = () => {
               className={`w-full flex items-center justify-between px-4 py-2.5 text-left transition-colors ${
                 language === lang.code
                   ? isDark
-                    ? 'bg-purple-500/20 text-purple-300'
-                    : 'bg-purple-100 text-purple-700'
+                    ? 'bg-bg-surface text-accent-trace'
+                    : 'bg-bg-surface text-accent-trace'
                   : isDark
-                    ? 'text-gray-300 hover:bg-purple-500/10 hover:text-purple-400'
-                    : 'text-gray-700 hover:bg-purple-50 hover:text-purple-600'
+                    ? 'text-text-secondary hover:bg-bg-surface hover:text-accent-trace'
+                    : 'text-gray-700 hover:bg-bg-surface hover:text-accent-trace'
               }`}
             >
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">{lang.label}</span>
-                <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <span className={`text-xs ${isDark ? 'text-text-secondary' : 'text-text-secondary'}`}>
                   {lang.fullName}
                 </span>
               </div>
               {language === lang.code && (
-                <Check size={16} className={isDark ? 'text-purple-400' : 'text-purple-600'} />
+                <Check size={16} className={isDark ? 'text-accent-trace' : 'text-accent-trace'} />
               )}
             </button>
           ))}

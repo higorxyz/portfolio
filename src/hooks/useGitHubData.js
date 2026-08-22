@@ -103,7 +103,7 @@ const getLanguageIcon = (language) => {
 };
 const getLanguageCategory = (language) => CATEGORY_MAP[language] || 'Other';
 
-export const useGitHubData = (username) => {
+export const useGitHubData = () => {
   const [data, setData] = useState({
     repos: [],
     stats: { totalStars: 0, totalForks: 0, publicRepos: 0 },
@@ -114,30 +114,16 @@ export const useGitHubData = (username) => {
 
   const fetchGitHubData = useCallback(async () => {
       try {
-        const headers = {};
-        const token = import.meta.env.VITE_GITHUB_TOKEN;
-        
-        if (token && token !== 'your_github_token_here') {
-          headers['Authorization'] = `Bearer ${token}`;
+        // Antes isso batia direto em api.github.com do navegador do
+        // visitante (sujeito ao limite de 60 req/hora por IP). Agora passa
+        // por /api/github-stats, que roda no servidor da Vercel e cacheia.
+        const response = await fetch('/api/github-stats');
+
+        if (!response.ok) {
+          throw new Error('Erro ao buscar dados do GitHub');
         }
 
-        const userResponse = await fetch(`https://api.github.com/users/${username}`, { headers });
-        if (!userResponse.ok) {
-          throw new Error('Usuário não encontrado');
-        }
-        
-        const userData = await userResponse.json();
-
-        const reposResponse = await fetch(
-          `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`,
-          { headers }
-        );
-        
-        if (!reposResponse.ok) {
-          throw new Error('Erro ao buscar repositórios');
-        }
-        
-        const reposData = await reposResponse.json();
+        const { user: userData, repos: reposData } = await response.json();
 
         const filteredRepos = reposData
           .filter(repo => !repo.fork && !repo.archived);
@@ -215,10 +201,10 @@ export const useGitHubData = (username) => {
         setData(prev => ({
           ...prev,
           loading: false,
-          error: 'Erro ao carregar dados do GitHub. Usando dados de exemplo.'
+          error: 'github.error'
         }));
       }
-    }, [username]);
+    }, []);
 
   useEffect(() => {
     fetchGitHubData();

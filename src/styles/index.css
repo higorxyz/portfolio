@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import './theme.css';
 
-/* Estilos para conteúdo do README */
+/* ===== Conteúdo do README (renderizado via /api/github-readme) ===== */
 .readme-content {
   color: #374151;
   line-height: 1.7;
@@ -10,10 +10,11 @@
 .readme-content h1,
 .readme-content h2,
 .readme-content h3 {
-  color: #7c3aed;
+  color: var(--text-primary-value);
   margin-top: 1.5em;
   margin-bottom: 0.75em;
   font-weight: 700;
+  font-family: var(--font-display);
 }
 
 .readme-content h1 { font-size: 2em; }
@@ -25,79 +26,78 @@
 }
 
 .readme-content a {
-  color: #7c3aed;
+  color: var(--color-accent-trace, #4fd1c5);
   text-decoration: underline;
   transition: color 0.2s;
 }
 
 .readme-content a:hover {
-  color: #6d28d9;
+  color: var(--color-accent-signal, #ff6b35);
 }
 
 .readme-content code {
-  background: rgba(124, 58, 237, 0.1);
+  background: rgba(79, 209, 197, 0.12);
+  color: #0f766e;
   padding: 0.2em 0.4em;
-  border-radius: 0.25em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
   font-size: 0.9em;
-  color: #6d28d9;
 }
 
 .readme-content pre {
-  background: #f9fafb;
-  border: 1px solid rgba(124, 58, 237, 0.2);
-  border-radius: 0.5em;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--line-value);
+  border-radius: 8px;
   padding: 1em;
   overflow-x: auto;
-  margin: 1em 0;
+  margin-bottom: 1em;
 }
 
 .readme-content pre code {
-  background: none;
+  background: transparent;
   padding: 0;
-  color: #374151;
 }
 
 .readme-content ul,
 .readme-content ol {
-  margin: 1em 0;
-  padding-left: 2em;
+  margin-bottom: 1em;
+  padding-left: 1.5em;
 }
 
 .readme-content li {
-  margin: 0.5em 0;
+  margin-bottom: 0.4em;
 }
 
 .readme-content img {
   max-width: 100%;
-  border-radius: 0.5em;
+  border-radius: 8px;
   margin: 1em 0;
 }
 
 .readme-content blockquote {
-  border-left: 4px solid #7c3aed;
+  border-left: 3px solid var(--color-accent-trace, #4fd1c5);
   padding-left: 1em;
-  margin: 1em 0;
   color: #6b7280;
-  font-style: italic;
+  margin: 1em 0;
 }
 
 .readme-content table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1em 0;
+  margin-bottom: 1em;
 }
 
 .readme-content th,
 .readme-content td {
-  border: 1px solid rgba(124, 58, 237, 0.2);
-  padding: 0.75em;
+  border: 1px solid var(--line-value);
+  padding: 0.5em 0.75em;
   text-align: left;
 }
 
 .readme-content th {
-  background: rgba(124, 58, 237, 0.1);
+  background: rgba(79, 209, 197, 0.08);
   font-weight: 600;
-  color: #7c3aed;
+  color: var(--text-primary-value);
 }
 
 /* Modo escuro - README */
@@ -105,28 +105,22 @@
   color: #e5e7eb;
 }
 
-.dark-theme .readme-content h1,
-.dark-theme .readme-content h2,
-.dark-theme .readme-content h3 {
-  color: #a855f7;
-}
-
 .dark-theme .readme-content a {
-  color: #c084fc;
+  color: var(--color-accent-trace, #4fd1c5);
 }
 
 .dark-theme .readme-content a:hover {
-  color: #e0b3ff;
+  color: var(--color-accent-signal, #ff6b35);
 }
 
 .dark-theme .readme-content code {
-  background: rgba(168, 85, 247, 0.1);
-  color: #e0b3ff;
+  background: rgba(79, 209, 197, 0.12);
+  color: var(--color-accent-trace, #4fd1c5);
 }
 
 .dark-theme .readme-content pre {
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  border: 1px solid var(--line-value);
 }
 
 .dark-theme .readme-content pre code {
@@ -134,34 +128,23 @@
 }
 
 .dark-theme .readme-content blockquote {
-  border-left-color: #a855f7;
+  border-left-color: var(--color-accent-trace, #4fd1c5);
   color: #9ca3af;
 }
 
 .dark-theme .readme-content th,
 .dark-theme .readme-content td {
-  border-color: rgba(168, 85, 247, 0.2);
+  border-color: var(--line-value);
 }
 
 .dark-theme .readme-content th {
-  background: rgba(168, 85, 247, 0.1);
-  color: #c084fc;
+  background: rgba(79, 209, 197, 0.1);
 }
 
-/* Animações customizadas */
-@keyframes gradient {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
+/* ===== Animações ===== */
 @keyframes spin-slow {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
 }
 
 @keyframes fadeIn {
@@ -170,11 +153,11 @@
 }
 
 @keyframes scaleIn {
-  from { 
+  from {
     opacity: 0;
     transform: scale(0.95);
   }
-  to { 
+  to {
     opacity: 1;
     transform: scale(1);
   }
@@ -190,7 +173,6 @@
   will-change: opacity, transform;
 }
 
-/* Animação para delay */
 .animation-delay-500 {
   animation-delay: 0.5s;
 }
@@ -199,26 +181,13 @@
   animation-delay: 1s;
 }
 
-/* Animação spin lenta */
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
   will-change: transform;
 }
 
-/* Animação de gradiente */
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient 3s ease infinite;
-  will-change: background-position;
-}
-
-/* Estilos globais */
+/* ===== Estilos globais ===== */
 @layer base {
-  :root {
-    --primary-color: #a855f7;
-    --secondary-color: #ec4899;
-  }
-
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
@@ -226,36 +195,20 @@
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     max-width: 100vw;
+    background-color: var(--bg-primary-value);
+    color: var(--text-primary-value);
   }
 
-  /* Esconde cursor em dispositivos touch/mobile E em telas pequenas (responsividade) */
-  @media (hover: none) and (pointer: coarse) {
-    * {
-      cursor: none !important;
-    }
-  }
-
-  /* Esconde cursor também no modo responsivo do Chrome (telas < 640px) */
-  @media (max-width: 639px) {
-    * {
-      cursor: none !important;
-    }
-  }
-
-  /* Scrollbar customizada para modo claro */
-  /* Esconde a scrollbar vertical em todos os modos */
   ::-webkit-scrollbar {
     width: 0px;
     height: 12px;
   }
-  /* Ajustes para inputs, textarea e botões no modo claro */
+
   .light-theme input,
   .light-theme textarea,
   .light-theme button,
@@ -263,38 +216,20 @@
     box-shadow: none !important;
   }
 
-  /* Remove sombra roxa dos botões no modo claro */
-  .light-theme .shadow-purple-500\/50,
-  .light-theme .shadow-xl,
-  .light-theme .shadow-lg {
-    box-shadow: none !important;
-  }
-
-  /* Remove sombra roxa dos botões com gradiente no modo claro */
-  .light-theme .bg-gradient-to-r {
-    box-shadow: none !important;
-  }
-
-  /* Opcional: mantém a scrollbar horizontal visível */
   ::-webkit-scrollbar:horizontal {
     height: 12px;
     width: auto;
   }
 
   ::-webkit-scrollbar-track:horizontal {
-    background: #000;
-  }
-
-  .light-theme ::-webkit-scrollbar-track:horizontal {
-    background: #e2e8f0;
+    background: var(--bg-primary-value);
   }
 
   ::-webkit-scrollbar-thumb:horizontal {
-    background: linear-gradient(90deg, #a855f7, #ec4899);
+    background: var(--color-accent-signal, #ff6b35);
     border-radius: 6px;
   }
 
-  /* Scrollbar customizada para o gráfico de contribuições - mais discreta */
   .contribution-graph-scroll::-webkit-scrollbar {
     height: 4px;
   }
@@ -304,28 +239,16 @@
   }
 
   .contribution-graph-scroll::-webkit-scrollbar-thumb {
-    background: rgba(168, 85, 247, 0.3);
+    background: var(--color-accent-trace-dim, rgba(79, 209, 197, 0.3));
     border-radius: 2px;
   }
 
   .contribution-graph-scroll::-webkit-scrollbar-thumb:hover {
-    background: rgba(168, 85, 247, 0.5);
+    background: rgba(79, 209, 197, 0.5);
   }
 
-  .light-theme .contribution-graph-scroll::-webkit-scrollbar-thumb {
-    background: rgba(168, 85, 247, 0.25);
-  }
-
-  .light-theme .contribution-graph-scroll::-webkit-scrollbar-thumb:hover {
-    background: rgba(168, 85, 247, 0.4);
-  }
-
-  /* Scrollbar customizada */
-  /* ...scrollbar vertical removida acima... */
-
-  /* Seleção de texto */
   ::selection {
-    background: rgba(168, 85, 247, 0.4);
+    background: var(--color-accent-signal, #ff6b35);
     color: #fff;
   }
 }

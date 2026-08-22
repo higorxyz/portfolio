@@ -1,5 +1,5 @@
 export const Skeleton = ({ className = '', variant = 'default' }) => {
-  const baseClass = 'animate-pulse bg-gradient-to-r from-purple-500/10 via-purple-500/20 to-purple-500/10 bg-[length:200%_100%] animate-shimmer';
+  const baseClass = 'animate-pulse bg-gradient-to-r from-bg-surface  to-bg-surface bg-[length:200%_100%] animate-shimmer';
   
   const variants = {
     default: 'rounded',
@@ -17,7 +17,7 @@ export const Skeleton = ({ className = '', variant = 'default' }) => {
 
 export const ProjectCardSkeleton = () => {
   return (
-    <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 flex flex-col">
+    <div className="bg-bg-surface border border-line rounded-2xl p-6 flex flex-col">
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-center gap-3">
           <Skeleton variant="circle" className="w-12 h-12" />
@@ -55,7 +55,7 @@ export const ProjectCardSkeleton = () => {
 
 export const SkillCardSkeleton = () => {
   return (
-    <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-purple-500/30 p-6 rounded-2xl">
+    <div className="bg-bg-surface border border-line p-6 rounded-2xl">
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-3">
           <Skeleton variant="circle" className="w-8 h-8" />
@@ -73,7 +73,7 @@ export const SkillCardSkeleton = () => {
 
 export const StatCardSkeleton = () => {
   return (
-    <div className="bg-gradient-to-br from-purple-500/30 to-pink-500/30 backdrop-blur-xl border border-purple-500/30 p-8 rounded-2xl">
+    <div className="bg-bg-surface border border-line p-8 rounded-2xl">
       <div className="flex justify-center mb-4">
         <Skeleton variant="circle" className="w-10 h-10" />
       </div>

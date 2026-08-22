@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Github, Linkedin, Instagram, ArrowUp } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
+import { ArrowUp, X } from 'lucide-react';
 import { useGitHubData } from './hooks/useGitHubData';
-import { useTheme } from './hooks/useTheme';
 import { useLanguage } from './hooks/useLanguage';
+import { useTheme } from './hooks/useTheme';
 import {
   HeroSection,
   StatsSection,
@@ -12,14 +12,20 @@ import {
   ContactSection
 } from './components/sections';
 import { NavigationBar } from './components/navigation';
-import { LoadingScreen, CustomCursor } from './components/common';
-import { ProjectModal } from './components/modals';
-import { CV_CONFIG } from './config';
-import { useParticleBackground } from './hooks/useParticleBackground';
+import { LoadingScreen } from './components/common';
+// ProjectModal só é usado quando o usuário abre um card de projeto — não precisa
+// ir no bundle inicial. O nome nomeado exige o .then() pra virar default export.
+const ProjectModal = lazy(() =>
+  import('./components/modals/ProjectModal').then((m) => ({ default: m.ProjectModal }))
+);
+import { CV_FILES } from './config';
+const CVPreviewModal = lazy(() =>
+  import('./components/modals/CVPreviewModal').then((m) => ({ default: m.CVPreviewModal }))
+);
 
 function App() {
+  const { t, language } = useLanguage();
   const { theme } = useTheme();
-  const { t } = useLanguage();
   const [activeSection, setActiveSection] = useState('home');
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -27,19 +33,23 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [isCVPreviewOpen, setIsCVPreviewOpen] = useState(false);
+  const [isErrorDismissed, setIsErrorDismissed] = useState(false);
 
-  const canvasRef = useRef(null);
-  useParticleBackground(canvasRef, theme);
 
   const username = 'higorxyz';
-  const { repos: githubRepos, stats, languages, loading, error } = useGitHubData(username);
+  const { repos: githubRepos, stats, languages, loading, error } = useGitHubData();
+
+  useEffect(() => {
+    setIsErrorDismissed(false);
+  }, [error]);
 
   const projects = useMemo(() => {
-    if (loading || githubRepos.length === 0) {
+    if (loading) {
       return [
         {
-          title: 'Carregando...',
-          description: 'Buscando seus projetos do GitHub...',
+          title: t('loading.loading'),
+          description: t('loading.projects'),
           tech: ['GitHub', 'API'],
           link: 'https://github.com/higorxyz',
           status: 'loading',
@@ -49,15 +59,33 @@ function App() {
         }
       ];
     }
+    if (githubRepos.length === 0 && error) {
+      return [
+        {
+          title: t('projects.previewTitle'),
+          description: t('projects.previewDescription'),
+          tech: ['React', 'TypeScript', 'REST API'],
+          link: 'https://github.com/higorxyz',
+          status: 'preview',
+          visits: '12',
+          stars: 12,
+          forks: 3,
+          github: 'https://github.com/higorxyz',
+          featured: false,
+          preview: true,
+          repoName: ''
+        }
+      ];
+    }
     return githubRepos;
-  }, [githubRepos, loading]);
+  }, [githubRepos, loading, error, t]);
 
   const skills = useMemo(() => {
     if (loading || languages.length === 0) {
-      return [{ name: 'Carregando...', level: 0, category: 'Loading' }];
+      return [{ name: t('loading.loading'), level: 0, category: 'Loading' }];
     }
     return languages;
-  }, [languages, loading]);
+  }, [languages, loading, t]);
 
   useEffect(() => {
     let ticking = false;
@@ -76,7 +104,8 @@ function App() {
               const element = document.getElementById(section);
               if (!element) return false;
               const rect = element.getBoundingClientRect();
-              return rect.top <= 100 && rect.bottom >= 100;
+              const viewportCenter = window.innerHeight / 2;
+              return rect.top <= viewportCenter && rect.bottom >= viewportCenter;
             });
             if (currentSection) setActiveSection(currentSection);
           }
@@ -108,12 +137,23 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  const downloadCV = useCallback(() => {
-    const link = document.createElement('a');
-    link.href = `${CV_CONFIG.path}${CV_CONFIG.fileName}`;
-    link.download = CV_CONFIG.fileName;
-    link.click();
-  }, []);
+  const openCV = useCallback(() => {
+    // <iframe> de PDF é inconsistente em navegador mobile (muitos só
+    // baixam em vez de exibir) — abaixo do breakpoint md, pula direto
+    // pro download/abrir em nova aba em vez de tentar o preview.
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (isMobile) {
+      const cv = CV_FILES[language] || CV_FILES.pt;
+      const link = document.createElement('a');
+      link.href = cv.path;
+      link.download = cv.fileName;
+      link.click();
+      return;
+    }
+    setIsCVPreviewOpen(true);
+  }, [language]);
+
+  const closeCVPreview = useCallback(() => setIsCVPreviewOpen(false), []);
 
   const handleProjectSelect = useCallback((project) => {
     setSelectedProject(project);
@@ -126,41 +166,42 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white relative">
-      <CustomCursor />
+    <div className="min-h-screen bg-bg-primary text-text-primary relative">
 
-      <div className={`transition-opacity duration-700 ease-out ${isInitialLoading ? 'opacity-0' : 'opacity-100'}`}>
-        {error && (
-          <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-yellow-500/20 border border-yellow-500 text-yellow-300 px-6 py-3 rounded-lg z-50 backdrop-blur-xl">
-             {error}
+       <div className={`transition-opacity duration-700 ease-out ${isInitialLoading ? 'opacity-0' : 'opacity-100'}`}>
+        {error && !isErrorDismissed && (
+          <div role="status" className={`fixed top-20 right-4 sm:right-6 max-w-xs bg-bg-surface border px-3 py-2 text-xs shadow-lg z-50 ${
+            theme === 'dark' ? 'border-yellow-500/60 text-yellow-300' : 'border-yellow-600/60 text-yellow-800'
+          }`}>
+             <div className="flex items-start gap-3">
+               <span><span className="font-mono text-yellow-500">STATUS / </span>{t(error)}</span>
+               <button
+                 type="button"
+                 onClick={() => setIsErrorDismissed(true)}
+                 aria-label={t('modal.close')}
+                 className="shrink-0 text-current/70 hover:text-current"
+               >
+                 <X size={14} />
+               </button>
+             </div>
           </div>
         )}
 
         <div
-          className="fixed top-0 left-0 h-1 z-[100]"
-          style={{
-            width: `${scrollProgress}%`,
-            background: 'linear-gradient(to right, #a855f7, #ec4899)',
-            boxShadow: '0 0 10px rgba(168, 85, 247, 0.5)'
-          }}
-        />
-
-        <canvas
-          ref={canvasRef}
-          className="fixed top-0 left-0 w-full h-full pointer-events-none z-0"
-          style={{ position: 'fixed' }}
+          className="fixed top-0 left-0 h-[2px] z-[100] bg-accent-signal"
+          style={{ width: `${scrollProgress}%` }}
         />
 
         <div className="relative z-10 overflow-x-hidden max-w-full">
           <NavigationBar
             activeSection={activeSection}
             onNavigate={scrollToSection}
-            onDownloadCV={downloadCV}
+            onDownloadCV={openCV}
           />
 
           <main>
             <HeroSection onNavigate={scrollToSection} />
-            <StatsSection stats={stats} loading={loading} />
+            <StatsSection stats={stats} loading={loading} error={error} />
             <AboutSection stats={stats} />
             <ProjectsSection
               projects={projects}
@@ -172,57 +213,26 @@ function App() {
             <ContactSection />
           </main>
 
-          <footer className="border-t border-purple-500/30 py-6 sm:py-8 px-4 sm:px-6 text-center">
+          <footer className="border-t border-line py-6 sm:py-8 px-4 sm:px-6 text-center">
             <div className="max-w-7xl mx-auto">
-              <p className="text-gray-400 mb-2 text-sm sm:text-base">
+              <p className="text-text-secondary mb-2 text-sm sm:text-base">
                 {t('footer.made')}
               </p>
-              <p className="text-gray-500 text-xs sm:text-sm mb-3 sm:mb-4">
+              <p className="text-text-secondary text-xs sm:text-sm mb-3 sm:mb-4">
                 &copy; {new Date().getFullYear()} Higor Batista. {t('footer.rights')}
               </p>
-              <div className="flex items-center justify-center gap-3 sm:gap-4 text-gray-500 text-xs sm:text-sm flex-wrap">
-                <span>{t('footer.version')} 2.0</span>
-                <span></span>
-                <span className="text-purple-400">{t('loading.version')}</span>
-              </div>
             </div>
           </footer>
 
           {showScrollTop && (
             <button
               onClick={scrollToTop}
-              className="fixed bottom-6 sm:bottom-8 right-6 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-2xl shadow-purple-500/50 hover:scale-110 hover:-translate-y-2 z-50"
+              className="fixed bottom-6 sm:bottom-8 right-6 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 bg-accent-signal rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:-translate-y-2 z-50"
             >
               <ArrowUp size={20} className="sm:w-6 sm:h-6" />
             </button>
           )}
 
-          <div className="hidden sm:flex fixed bottom-6 sm:bottom-8 left-6 sm:left-8 flex-col gap-3 sm:gap-4 z-50">
-            <a
-              href="https://github.com/higorxyz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-600 rounded-full flex items-center justify-center shadow-xl shadow-purple-500/50 hover:scale-110 transition-transform"
-            >
-              <Github size={18} className="sm:w-5 sm:h-5 text-white" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/higorbatista"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-xl shadow-blue-500/50 hover:scale-110 transition-transform"
-            >
-              <Linkedin size={18} className="sm:w-5 sm:h-5 text-white" />
-            </a>
-            <a
-              href="https://www.instagram.com/higorxyz/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-xl shadow-pink-500/50 hover:scale-110 transition-transform"
-            >
-              <Instagram size={18} className="sm:w-5 sm:h-5 text-white" />
-            </a>
-          </div>
         </div>
       </div>
 
@@ -230,11 +240,21 @@ function App() {
         <LoadingScreen onLoadingComplete={() => setIsInitialLoading(false)} />
       )}
 
-      <ProjectModal
-        project={selectedProject}
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-      />
+      {isModalOpen && (
+        <Suspense fallback={null}>
+          <ProjectModal
+            project={selectedProject}
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+          />
+        </Suspense>
+      )}
+
+      {isCVPreviewOpen && (
+        <Suspense fallback={null}>
+          <CVPreviewModal isOpen={isCVPreviewOpen} onClose={closeCVPreview} />
+        </Suspense>
+      )}
     </div>
   );
 }

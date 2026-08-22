@@ -1,85 +1,111 @@
 import { useMemo } from 'react';
-import { Cpu, Rocket, Mail, Github, Linkedin, Instagram, ChevronDown } from 'lucide-react';
+import { Terminal, Rocket, Mail, Github, Linkedin, Instagram, ChevronDown, ArrowUpRight, Circle } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
-import { useTypewriter } from '../../hooks/useTypewriter';
 
 export const HeroSection = ({ onNavigate }) => {
   const { t } = useLanguage();
-  const texts = useMemo(() => [t('hero.role1'), t('hero.role2')], [t]);
-  const { typedText, showCursor } = useTypewriter(texts);
+  const roles = useMemo(() => [t('hero.role1'), t('hero.role2')], [t]);
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center px-4 sm:px-6 pt-20 sm:pt-24 pb-12 sm:pb-16">
-      <div className="max-w-5xl mx-auto text-center w-full">
-        <div className="relative w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto mb-6 sm:mb-8">
-          <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-purple-500 flex items-center justify-center shadow-subtle-xl">
-            <Cpu className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20" />
+    <section
+      id="home"
+      className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 pt-20 sm:pt-24 pb-12 sm:pb-16 overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-blueprint-grid pointer-events-none" aria-hidden="true" />
+
+      <div className="relative max-w-7xl mx-auto w-full grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-16 items-center">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 font-mono text-xs sm:text-sm text-accent-trace border border-line bg-bg-surface/70 px-3 py-1.5 mb-6 sm:mb-8">
+            <Terminal size={14} />
+            <span>{roles.join(' / ')}</span>
           </div>
-        </div>
 
-        <div className="text-purple-500 font-mono mb-4 sm:mb-6 text-sm sm:text-base">
-          console.log("Hello World! 👋")
-        </div>
+          <p className="font-mono text-xs sm:text-sm text-accent-signal mb-3 tracking-normal">01 / {t('hero.eyebrow')}</p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-5 sm:mb-6 leading-[1.05] text-text-primary max-w-2xl">
+            {t('hero.headline')}
+          </h1>
 
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 bg-clip-text text-transparent leading-tight px-4 pb-1 overflow-visible">
-          {typedText}
-          <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity`}>|</span>
-        </h2>
+          <p className="text-base sm:text-lg md:text-xl text-text-secondary mb-8 sm:mb-10 max-w-2xl leading-relaxed">
+            {t('hero.description')}
+          </p>
 
-        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed px-4">
-          {t('hero.description')}
-        </p>
-
-        <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center mb-8 sm:mb-10 px-4">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-10 sm:mb-12">
           <button
             onClick={() => onNavigate('projetos')}
-            className="w-full sm:w-auto px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-subtle-lg"
+            className="w-full sm:w-auto px-6 py-3 rounded-lg bg-accent-signal text-bg-primary font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
           >
             <Rocket size={18} /> {t('hero.viewProjects')}
           </button>
           <button
             onClick={() => onNavigate('contato')}
-            className="w-full sm:w-auto card-motion transform px-6 py-3 rounded-full border-2 border-purple-500 bg-transparent font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:scale-105 hover:bg-purple-500/20"
+            className="w-full sm:w-auto card-motion transform px-6 py-3 rounded-lg border border-line bg-transparent text-text-primary font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:bg-bg-surface"
           >
             <Mail size={18} /> {t('hero.contact')}
           </button>
-        </div>
+          </div>
 
-        <div className="flex gap-3 sm:gap-4 justify-center mb-10 sm:mb-12 px-4">
+          <div className="flex gap-3 sm:gap-4">
           <a
             href="https://github.com/higorxyz"
             target="_blank"
             rel="noopener noreferrer"
-            className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center hover:bg-purple-500/40 hover:-translate-y-2 shadow-lg"
+            aria-label="GitHub"
+            className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
-            <Github size={20} className="sm:w-6 sm:h-6" />
+            <Github size={20} className="sm:w-6 sm:h-6 text-text-primary" />
           </a>
           <a
             href="https://www.linkedin.com/in/higorbatista"
             target="_blank"
             rel="noopener noreferrer"
-            className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center hover:bg-purple-500/40 hover:-translate-y-2 shadow-lg"
+            aria-label="LinkedIn"
+            className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
-            <Linkedin size={20} className="sm:w-6 sm:h-6" />
+            <Linkedin size={20} className="sm:w-6 sm:h-6 text-text-primary" />
           </a>
           <a
             href="https://www.instagram.com/higorxyz/"
             target="_blank"
             rel="noopener noreferrer"
-            className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center hover:bg-purple-500/40 hover:-translate-y-2 shadow-lg"
+            aria-label="Instagram"
+            className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
-            <Instagram size={20} className="sm:w-6 sm:h-6" />
+            <Instagram size={20} className="sm:w-6 sm:h-6 text-text-primary" />
           </a>
           <a
             href="mailto:dev.higorxyz@gmail.com"
-            className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center hover:bg-purple-500/40 hover:-translate-y-2 shadow-lg"
+            aria-label="Email"
+            className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
-            <Mail size={20} className="sm:w-6 sm:h-6" />
+            <Mail size={20} className="sm:w-6 sm:h-6 text-text-primary" />
           </a>
+          </div>
+        </div>
+
+        <div className="relative hidden md:block">
+          <div className="relative border border-line bg-bg-surface shadow-2xl">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-line font-mono text-xs text-text-secondary">
+              <Circle size={9} fill="currentColor" className="text-accent-trace" />
+              <span>higorxyz / build-log</span>
+              <span className="ml-auto text-accent-trace">ONLINE</span>
+            </div>
+            <div className="p-5 sm:p-7 font-mono text-xs sm:text-sm leading-8">
+              <p className="text-text-secondary"><span className="text-accent-signal">$</span> cat current-focus.json</p>
+              <p className="text-text-primary pl-4">{'{'}</p>
+              <p className="text-text-secondary pl-8"><span className="text-accent-trace">"studying"</span>: "Software Engineering / FIAP",</p>
+              <p className="text-text-secondary pl-8"><span className="text-accent-trace">"building"</span>: "web apps + REST APIs",</p>
+              <p className="text-text-secondary pl-8"><span className="text-accent-trace">"exploring"</span>: "AI, ML + data"</p>
+              <p className="text-text-primary pl-4">{'}'}</p>
+              <div className="mt-5 pt-4 border-t border-line flex items-center justify-between text-xs">
+                <span className="text-text-secondary">{t('hero.availability')}</span>
+                <ArrowUpRight size={16} className="text-accent-signal" />
+              </div>
+            </div>
+          </div>
         </div>
 
         <ChevronDown
-          className="w-8 h-8 sm:w-10 sm:h-10 text-purple-500 mx-auto animate-bounce cursor-pointer"
+          className="w-8 h-8 sm:w-10 sm:h-10 text-text-secondary lg:col-span-2 mx-auto animate-bounce cursor-pointer"
           onClick={() => onNavigate('sobre')}
         />
       </div>

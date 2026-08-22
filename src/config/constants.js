@@ -1,6 +1,14 @@
-export const CV_CONFIG = {
-  fileName: 'Higor Batista - Curriculo Profissional.pdf',
-  path: '/cv/'
+// Um PDF por idioma. Trocar o toggle PT/EN troca automaticamente qual
+// arquivo o botão de CV abre/baixa (ver hooks/useCVFile.js).
+export const CV_FILES = {
+  pt: {
+    path: '/cv/curriculo-higor-batista-pt.pdf',
+    fileName: 'Curriculo-Higor-Batista.pdf'
+  },
+  en: {
+    path: '/cv/higor-batista-resume-en.pdf',
+    fileName: 'Higor-Batista-Resume.pdf'
+  }
 };
 
 export const GITHUB_CONFIG = {

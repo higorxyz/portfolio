@@ -51,7 +51,7 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black transition-opacity duration-700 ease-out ${
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-bg-primary transition-opacity duration-700 ease-out ${
         isExiting ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
@@ -82,25 +82,25 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
         >
           <div className="relative">
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 rounded-full border-2 border-purple-500/20 animate-ping" style={{ animationDuration: '2s' }} />
+              <div className="w-32 h-32 rounded-full border border-line animate-ping" style={{ animationDuration: '2s' }} />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 rounded-full border-2 border-pink-500/15 animate-ping animation-delay-500" style={{ animationDuration: '2s' }} />
+              <div className="w-32 h-32 rounded-full border border-line animate-ping animation-delay-500" style={{ animationDuration: '2s' }} />
             </div>
 
-            <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-purple-600 via-pink-600 to-purple-600 flex items-center justify-center shadow-2xl shadow-purple-500/50 animate-gradient">
-              <Terminal className="w-16 h-16 text-white animate-pulse" />
+            <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-bg-surface via-bg-surface to-bg-surface flex items-center justify-center shadow-2xl animate-gradient">
+              <Terminal className="w-16 h-16 text-text-primary animate-pulse" />
             </div>
 
             <div className="absolute inset-0 animate-spin-slow">
               <Code
-                className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-purple-400"
+                className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-accent-trace"
                 size={20}
               />
             </div>
             <div className="absolute inset-0 animate-spin-slow animation-delay-1000">
               <Zap
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 text-pink-400"
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 text-accent-signal"
                 size={20}
               />
             </div>
@@ -112,10 +112,10 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
             showText ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-2 animate-gradient pb-1">
+          <h2 className="text-3xl font-bold text-text-primary mb-2 animate-gradient pb-1">
             @higorxyz
           </h2>
-          <p className="text-gray-400 text-sm font-mono animate-pulse">
+          <p className="text-text-secondary text-sm font-mono animate-pulse">
             {loadingText}
           </p>
         </div>
@@ -125,9 +125,9 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
             showText ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          <div className="relative w-full h-2 bg-black/50 rounded-full overflow-hidden border border-purple-500/30 backdrop-blur-xl">
+          <div className="relative w-full h-2 bg-bg-primary rounded-full overflow-hidden border border-line">
             <div
-              className="h-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 rounded-full transition-all duration-100 ease-linear relative overflow-hidden bg-[length:200%_100%] animate-gradient"
+              className="h-full bg-gradient-to-r from-bg-surface via-bg-surface to-bg-surface rounded-full transition-all duration-100 ease-linear relative overflow-hidden bg-[length:200%_100%] animate-gradient"
               style={{ width: `${progress}%` }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
@@ -135,15 +135,15 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
 
             {progress > 0 && (
               <div
-                className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-lg shadow-purple-500/50"
+                className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-lg"
                 style={{ left: `${Math.max(progress - 2, 0)}%` }}
               />
             )}
           </div>
 
           <div className="flex justify-between items-center mt-2 text-xs">
-            <span className="text-purple-400 font-mono">{Math.floor(progress)}%</span>
-            <span className="text-gray-500 font-mono">{t('loading.loading')}</span>
+            <span className="text-accent-trace font-mono">{Math.floor(progress)}%</span>
+            <span className="text-text-secondary font-mono">{t('loading.loading')}</span>
           </div>
         </div>
 

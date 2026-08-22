@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import { useLanguage } from '../../hooks/useLanguage';
 
-const CELL_SIZE = 12;
+const CELL_SIZE = 13;
 const CELL_GAP = 3;
 const MONTH_LABEL_HEIGHT = 18;
 const SIDE_LABEL_WIDTH = 28;
@@ -241,19 +241,19 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
 
   const getContributionColors = (count) => {
     const darkPalette = [
-      { max: 0, bg: '#161b22', border: '#1b1f23' },
-      { max: 2, bg: '#372264', border: '#4c1d95' },
-      { max: 5, bg: '#4c1d95', border: '#5b21b6' },
-      { max: 8, bg: '#6d28d9', border: '#7c3aed' },
-      { max: Infinity, bg: '#a855f7', border: '#c084fc' }
+      { max: 0, bg: '#151f2d', border: '#24344a' },
+      { max: 2, bg: '#4a271f', border: '#713525' },
+      { max: 5, bg: '#a84327', border: '#c95532' },
+      { max: 8, bg: '#ff6b35', border: '#ff8456' },
+      { max: Infinity, bg: '#ffb08f', border: '#ffd0bf' }
     ];
 
     const lightPalette = [
       { max: 0, bg: '#ebedf0', border: '#d0d7de' },
-      { max: 2, bg: '#e9d5ff', border: '#d8b4fe' },
-      { max: 5, bg: '#c4b5fd', border: '#a78bfa' },
-      { max: 8, bg: '#a78bfa', border: '#8b5cf6' },
-      { max: Infinity, bg: '#7c3aed', border: '#5b21b6' }
+      { max: 2, bg: '#ffe2d8', border: '#ffc1ad' },
+      { max: 5, bg: '#ffb39b', border: '#ff9070' },
+      { max: 8, bg: '#ff6b35', border: '#e95522' },
+      { max: Infinity, bg: '#c9421f', border: '#a8371d' }
     ];
 
     const palette = isDarkMode ? darkPalette : lightPalette;
@@ -274,21 +274,21 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
 
   if (loading) {
     return (
-      <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-6 border-2 ${
+      <div className={`rounded-lg p-4 sm:p-6 border ${
         isDarkMode
-          ? 'bg-gradient-to-br from-purple-950/50 to-pink-950/30 border-purple-500/30 shadow-lg shadow-purple-500/20'
-          : 'bg-white border-purple-300 shadow-lg shadow-purple-200/50'
+          ? 'bg-gradient-to-br from-bg-surface to-bg-surface border-line shadow-lg '
+          : 'bg-white border-line shadow-lg '
       }`}>
         <h3 className={`text-xs sm:text-sm font-normal mb-3 sm:mb-4 ${
-          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          isDarkMode ? 'text-text-secondary' : 'text-gray-600'
         }`}>
-          Carregando contribuições...
+          {t('contributions.loading')}
         </h3>
         <div className="flex items-center justify-center py-12 sm:py-20">
           <div className={`animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-4 ${
             isDarkMode
-              ? 'border-purple-500 border-t-transparent'
-              : 'border-purple-600 border-t-transparent'
+              ? 'border-line border-t-transparent'
+              : 'border-line border-t-transparent'
           }`} />
         </div>
       </div>
@@ -313,23 +313,30 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
   const totalFormatted = totalContributions.toLocaleString(locale);
 
   return (
-    <div className={`rounded-xl sm:rounded-2xl p-4 sm:p-6 border-2 ${
+    <div className={`rounded-lg p-4 sm:p-5 border ${
       isDarkMode
-        ? 'bg-gradient-to-br from-purple-950/50 to-pink-950/30 border-purple-500/30 shadow-lg shadow-purple-500/20'
-        : 'bg-white border-purple-300 shadow-lg shadow-purple-200/50'
+        ? 'bg-gradient-to-br from-bg-surface to-bg-surface border-line shadow-lg '
+        : 'bg-white border-line shadow-lg '
     }`}>
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-2">
+        <div className="w-full max-w-[940px] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b border-line pb-4">
+          <div>
+            <p className="font-mono text-xs text-accent-signal mb-1">GITHUB / ACTIVITY</p>
+            <h3 className="text-base sm:text-lg font-semibold text-text-primary">{t('contributions.heading')}</h3>
+          </div>
+          <span className="font-mono text-[10px] sm:text-xs text-text-secondary">github.com/{username}</span>
+        </div>
         <div
-          className={`w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs sm:text-sm ${
-          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          className={`w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm sm:text-base ${
+          isDarkMode ? 'text-text-secondary' : 'text-gray-600'
         }`}
           style={infoWidthStyle}
         >
-          <span className="text-center sm:text-left">
+          <span className="text-center sm:text-left font-medium text-text-primary">
             {totalFormatted} {t('contributions.title')}
           </span>
-          <div className={`flex items-center justify-center sm:justify-end gap-3 text-[10px] sm:text-xs ${
-            isDarkMode ? 'text-gray-400' : 'text-gray-500'
+          <div className={`flex items-center justify-center sm:justify-end gap-3 text-xs sm:text-sm ${
+            isDarkMode ? 'text-text-secondary' : 'text-text-secondary'
           }`}>
             <span>{formatStreak(currentStreak, 'current')}</span>
             <span>{formatStreak(longestStreak, 'longest')}</span>
@@ -349,7 +356,7 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
                     <span
                       key={dayIndex}
                       className={`absolute left-0 -translate-y-1/2 text-[9px] sm:text-[11px] ${
-                        isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                        isDarkMode ? 'text-text-secondary' : 'text-text-secondary'
                       }`}
                       style={{ top }}
                     >
@@ -371,7 +378,7 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
                     <span
                       key={`${month.label}-${month.weekIndex}`}
                       className={`absolute text-[9px] sm:text-[11px] ${
-                        isDarkMode ? 'text-gray-500' : 'text-gray-500'
+                        isDarkMode ? 'text-text-secondary' : 'text-text-secondary'
                       }`}
                       style={{ left: month.weekIndex * (CELL_SIZE + CELL_GAP) }}
                     >
@@ -419,7 +426,7 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
 
         <div
           className={`w-full flex items-center justify-center sm:justify-end gap-1 text-[9px] sm:text-[11px] ${
-          isDarkMode ? 'text-gray-500' : 'text-gray-600'
+          isDarkMode ? 'text-text-secondary' : 'text-gray-600'
         }`}
           style={infoWidthStyle}
         >
