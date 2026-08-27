@@ -74,22 +74,6 @@ export const languageColors = {
   'default': '#A78BFA'
 };
 
-// Overrides para modo claro: só as cores que têm contraste < 3:1
-// sobre fundo branco (#ffffff). As que não estão aqui já passam.
-const lightOverrides = {
-  'JavaScript': '#a16207',   // Amarelo → dourado escuro (4.6:1)
-  'C': '#5b6b7d',           // Cinza claro → cinza chumbo (4.5:1)
-  'React': '#0284c7',       // Ciano claro → sky-600 (4.5:1)
-  'Shell': '#3d7a1c',       // Verde claro → verde floresta (4.6:1)
-  'Vue': '#1a7a5a',         // Verde médio → verde escuro (4.5:1)
-  'Nuxt.js': '#059669',     // Verde neon → emerald-600 (4.5:1)
-  'Go': '#0e7490',          // Ciano → cyan-700 (4.5:1)
-  'default': '#7c3aed',     // Violeta claro → violet-600 (4.5:1)
-};
-
-export const getLanguageColor = (language, isDark = true) => {
-  if (!isDark && lightOverrides[language]) {
-    return lightOverrides[language];
-  }
+export const getLanguageColor = (language) => {
   return languageColors[language] || languageColors['default'];
 };

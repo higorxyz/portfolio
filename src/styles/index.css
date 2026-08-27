@@ -26,13 +26,13 @@
 }
 
 .readme-content a {
-  color: var(--accent-trace-text-value, #0f7a70);
+  color: var(--color-accent-trace, #4fd1c5);
   text-decoration: underline;
   transition: color 0.2s;
 }
 
 .readme-content a:hover {
-  color: var(--accent-signal-text-value, #b8461a);
+  color: var(--color-accent-signal, #ff6b35);
 }
 
 .readme-content code {
@@ -139,35 +139,6 @@
 
 .dark-theme .readme-content th {
   background: rgba(79, 209, 197, 0.1);
-}
-
-/* ===== Console "Sobre Mim" ===== */
-/* Modo escuro: herda tokens do tema */
-.about-console {
-  background: var(--bg-primary-value);
-  border: 1px solid var(--line-value);
-}
-.about-console-bar {
-  background: var(--bg-surface-value);
-}
-.about-console-code {
-  color: var(--text-primary-value);
-}
-
-/* Modo claro: console branco integrado ao site, com barra de título
-   levemente acinzentada pra dar hierarquia sem pesar. */
-.light-theme .about-console {
-  background: #ffffff;
-  border: 1px solid var(--line-value);
-  box-shadow:
-    0 1px 3px rgba(15, 23, 42, 0.06),
-    0 4px 16px rgba(15, 23, 42, 0.04);
-}
-.light-theme .about-console-bar {
-  background: #f1f5f9;
-}
-.light-theme .about-console-code {
-  color: var(--text-primary-value);
 }
 
 /* ===== Animações ===== */

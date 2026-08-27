@@ -35,7 +35,7 @@ export const SearchBar = ({ onSearch, totalResults, placeholder }) => {
           <Search 
             className={`
               w-5 h-5 transition-colors duration-300
-              ${isFocused || searchTerm ? 'text-accent-trace-text' : 'text-text-secondary'}
+              ${isFocused || searchTerm ? 'text-accent-trace' : 'text-text-secondary'}
             `}
           />
 
@@ -58,7 +58,7 @@ export const SearchBar = ({ onSearch, totalResults, placeholder }) => {
               onClick={clearSearch}
               className="p-1 rounded-lg
  bg-bg-surface hover:bg-bg-surface
- text-accent-trace-text hover:text-accent-trace-text
+ text-accent-trace hover:text-accent-trace
  transition-all duration-200"
             >
               <X className="w-4 h-4" />
@@ -73,9 +73,9 @@ export const SearchBar = ({ onSearch, totalResults, placeholder }) => {
               {totalResults === 0 ? (
                 <span className="text-yellow-400">{t('projects.noResults')}</span>
               ) : totalResults === 1 ? (
-                <span className="text-accent-trace-text">{t('projects.oneResult')}</span>
+                <span className="text-accent-trace">{t('projects.oneResult')}</span>
               ) : (
-                <span className="text-accent-trace-text">{t('projects.multipleResults').replace('{count}', totalResults)}</span>
+                <span className="text-accent-trace">{t('projects.multipleResults').replace('{count}', totalResults)}</span>
               )}
             </span>
           </div>

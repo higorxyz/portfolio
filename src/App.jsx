@@ -12,7 +12,7 @@ import {
   ContactSection
 } from './components/sections';
 import { NavigationBar } from './components/navigation';
-import { LoadingScreen, ScrollProgressBar } from './components/common';
+import { LoadingScreen } from './components/common';
 // ProjectModal só é usado quando o usuário abre um card de projeto — não precisa
 // ir no bundle inicial. O nome nomeado exige o .then() pra virar default export.
 const ProjectModal = lazy(() =>
@@ -27,6 +27,7 @@ function App() {
   const { t, language } = useLanguage();
   const { theme } = useTheme();
   const [activeSection, setActiveSection] = useState('home');
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,10 +39,6 @@ function App() {
 
   const username = 'higorxyz';
   const { repos: githubRepos, stats, languages, loading, error } = useGitHubData();
-
-  useEffect(() => {
-    document.documentElement.lang = language === 'en' ? 'en' : 'pt-BR';
-  }, [language]);
 
   useEffect(() => {
     setIsErrorDismissed(false);
@@ -93,47 +90,24 @@ function App() {
   useEffect(() => {
     let ticking = false;
 
-    const updateActiveSection = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const docHeight = document.documentElement.scrollHeight;
-
-      // 1. Próximo ao topo da página -> 'home'
-      if (scrollY < 120) {
-        setActiveSection((prev) => (prev !== 'home' ? 'home' : prev));
-        return;
-      }
-
-      // 2. Próximo ao final da página -> 'contato' (garante ativação no rodapé)
-      if (windowHeight + scrollY >= docHeight - 80) {
-        setActiveSection((prev) => (prev !== 'contato' ? 'contato' : prev));
-        return;
-      }
-
-      // 3. Linha de leitura suave a 35% da altura da viewport
-      const triggerY = scrollY + windowHeight * 0.35;
-      const sections = ['home', 'sobre', 'projetos', 'skills', 'contato'];
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const id = sections[i];
-        const el = document.getElementById(id);
-        if (el) {
-          const top = el.getBoundingClientRect().top + scrollY;
-          if (top <= triggerY) {
-            setActiveSection((prev) => (prev !== id ? id : prev));
-            return;
-          }
-        }
-      }
-    };
-
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
+          const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+          setScrollProgress(progress);
           setShowScrollTop(window.scrollY > 500);
 
           if (!isScrolling) {
-            updateActiveSection();
+            const sections = ['home', 'sobre', 'projetos', 'skills', 'contato'];
+            const currentSection = sections.find((section) => {
+              const element = document.getElementById(section);
+              if (!element) return false;
+              const rect = element.getBoundingClientRect();
+              const viewportCenter = window.innerHeight / 2;
+              return rect.top <= viewportCenter && rect.bottom >= viewportCenter;
+            });
+            if (currentSection) setActiveSection(currentSection);
           }
 
           ticking = false;
@@ -143,7 +117,6 @@ function App() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    updateActiveSection();
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isScrolling]);
 
@@ -153,13 +126,8 @@ function App() {
 
     const element = document.getElementById(section);
     if (element) {
-      const navOffset = 70;
-      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: Math.max(0, elementPosition - navOffset),
-        behavior: 'smooth'
-      });
-      setTimeout(() => setIsScrolling(false), 800);
+      element.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => setIsScrolling(false), 1000);
     } else {
       setIsScrolling(false);
     }
@@ -219,7 +187,10 @@ function App() {
           </div>
         )}
 
-        <ScrollProgressBar />
+        <div
+          className="fixed top-0 left-0 h-[2px] z-[100] bg-accent-signal"
+          style={{ width: `${scrollProgress}%` }}
+        />
 
         <div className="relative z-10 overflow-x-hidden max-w-full">
           <NavigationBar
@@ -256,7 +227,7 @@ function App() {
           {showScrollTop && (
             <button
               onClick={scrollToTop}
-              className="fixed bottom-6 sm:bottom-8 right-6 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 bg-accent-signal text-on-accent rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:-translate-y-2 z-50"
+              className="fixed bottom-6 sm:bottom-8 right-6 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 bg-accent-signal rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:-translate-y-2 z-50"
             >
               <ArrowUp size={20} className="sm:w-6 sm:h-6" />
             </button>

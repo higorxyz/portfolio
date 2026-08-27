@@ -17,7 +17,7 @@
 // Configurar em vercel.com → Project → Settings → Environment Variables.
 // NUNCA prefixar com VITE_ — isso exporia o token no client.
 
-const GITHUB_USERNAME = process.env.GITHUB_USERNAME || 'higorxyz';
+const GITHUB_USERNAME = 'higorxyz';
 
 export default async function handler(req, res) {
   try {

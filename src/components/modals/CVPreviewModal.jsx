@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Download, X, ZoomIn, ZoomOut, FileText } from 'lucide-react';
 import Portal from '../common/Portal';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
-import { useModalA11y } from '../../hooks/useModalA11y';
 import { CV_FILES } from '../../config';
 
 let pdfjsPromise;
@@ -22,49 +21,13 @@ const loadPdfJs = () => {
   return pdfjsPromise;
 };
 
-// Uma <canvas> por página do PDF, empilhadas verticalmente — funciona
-// igual pra currículo de 1 página (caso atual) ou de várias (se crescer).
-const PdfPageCanvas = ({ page, scale, onRendered, onError }) => {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return undefined;
-
-    let isMounted = true;
-    const viewport = page.getViewport({ scale });
-    const context = canvas.getContext('2d', { alpha: false });
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    const renderTask = page.render({ canvasContext: context, viewport });
-
-    renderTask.promise
-      .then(() => {
-        if (isMounted) onRendered();
-      })
-      .catch((error) => {
-        if (error?.name !== 'RenderingCancelledException') {
-          console.error('Erro ao desenhar página do currículo:', error);
-          if (isMounted) onError();
-        }
-      });
-
-    return () => {
-      isMounted = false;
-      renderTask.cancel();
-    };
-  }, [page, scale, onRendered, onError]);
-
-  return <canvas ref={canvasRef} className="max-w-full h-auto shadow-2xl" />;
-};
-
 export const CVPreviewModal = ({ isOpen, onClose }) => {
   const { language, t } = useLanguage();
   useBodyScrollLock(isOpen);
-  const containerRef = useModalA11y(isOpen, onClose);
+  const canvasRef = useRef(null);
+  const viewerRef = useRef(null);
   const [scale, setScale] = useState(1);
-  const [pages, setPages] = useState([]);
-  const [renderedCount, setRenderedCount] = useState(0);
+  const [page, setPage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -72,15 +35,14 @@ export const CVPreviewModal = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (!isOpen) {
-      setPages([]);
+      setPage(null);
       return undefined;
     }
 
     let isMounted = true;
     setIsLoading(true);
     setHasError(false);
-    setPages([]);
-    setRenderedCount(0);
+    setPage(null);
 
     const loadDocument = async () => {
       try {
@@ -89,12 +51,8 @@ export const CVPreviewModal = ({ isOpen, onClose }) => {
         if (!response.ok) throw new Error('Falha ao carregar o PDF');
         const documentData = await response.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: documentData }).promise;
-
-        const allPages = await Promise.all(
-          Array.from({ length: pdf.numPages }, (_, index) => pdf.getPage(index + 1))
-        );
-
-        if (isMounted) setPages(allPages);
+        const firstPage = await pdf.getPage(1);
+        if (isMounted) setPage(firstPage);
       } catch (error) {
         console.error('Erro ao renderizar currículo:', error);
         if (isMounted) {
@@ -110,19 +68,31 @@ export const CVPreviewModal = ({ isOpen, onClose }) => {
     };
   }, [cv.path, isOpen]);
 
-  const handlePageRendered = useCallback(() => {
-    setRenderedCount((count) => count + 1);
-  }, []);
-
-  const handlePageError = useCallback(() => {
-    setHasError(true);
-  }, []);
-
   useEffect(() => {
-    if (pages.length > 0 && renderedCount >= pages.length) {
-      setIsLoading(false);
-    }
-  }, [pages.length, renderedCount]);
+    if (!isOpen || !page || !canvasRef.current) return undefined;
+
+    let isMounted = true;
+    const canvas = canvasRef.current;
+    const viewport = page.getViewport({ scale });
+    const context = canvas.getContext('2d', { alpha: false });
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const renderTask = page.render({ canvasContext: context, viewport });
+
+    renderTask.promise.then(() => {
+      if (isMounted) setIsLoading(false);
+    }).catch((error) => {
+      if (error?.name !== 'RenderingCancelledException') {
+        console.error('Erro ao desenhar currículo:', error);
+        if (isMounted) setHasError(true);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      renderTask.cancel();
+    };
+  }, [isOpen, page, scale]);
 
   if (!isOpen) return null;
 
@@ -133,17 +103,12 @@ export const CVPreviewModal = ({ isOpen, onClose }) => {
         onClick={onClose}
       >
         <div
-          ref={containerRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label={t('cv.label')}
-          tabIndex={-1}
-          className="bg-bg-surface border border-line rounded-lg w-full max-w-5xl h-[92vh] max-h-[960px] flex flex-col overflow-hidden shadow-2xl outline-none"
+          className="bg-bg-surface border border-line rounded-lg w-full max-w-5xl h-[92vh] max-h-[960px] flex flex-col overflow-hidden shadow-2xl"
           onClick={(event) => event.stopPropagation()}
         >
           <header className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-line bg-bg-surface">
             <span className="text-sm sm:text-base font-mono font-medium text-text-primary truncate">
-              <span className="text-accent-signal-text">CV / </span>{t('cv.label')}
+              <span className="text-accent-signal">CV / </span>{t('cv.label')}
             </span>
             <div className="flex items-center gap-2 shrink-0">
               <button
@@ -171,7 +136,7 @@ export const CVPreviewModal = ({ isOpen, onClose }) => {
                 href={cv.path}
                 download={cv.fileName}
                 aria-label={t('cv.download')}
-                className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-bg-surface-hover text-accent-trace-text transition-colors"
+                className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-bg-surface-hover text-accent-trace transition-colors"
               >
                 <Download size={18} />
               </a>
@@ -186,27 +151,22 @@ export const CVPreviewModal = ({ isOpen, onClose }) => {
             </div>
           </header>
 
-          <div className="relative flex-1 overflow-auto bg-bg-primary p-4 sm:p-8">
-            <div className="min-h-full flex flex-col items-center gap-4">
-              {pages.map((page, index) => (
-                <PdfPageCanvas
-                  key={index}
-                  page={page}
-                  scale={scale}
-                  onRendered={handlePageRendered}
-                  onError={handlePageError}
-                />
-              ))}
-
-              {isLoading && !hasError && (
+          <div ref={viewerRef} className="relative flex-1 overflow-auto bg-bg-primary p-4 sm:p-8">
+            <div className="min-h-full flex items-start justify-center">
+              <canvas
+                ref={canvasRef}
+                aria-label={cv.fileName}
+                className={`max-w-full h-auto shadow-2xl ${isLoading || hasError ? 'hidden' : 'block'}`}
+              />
+              {isLoading && (
                 <div className="flex flex-col items-center gap-3 py-24 text-text-secondary">
-                  <FileText className="text-accent-trace-text animate-pulse" size={28} />
+                  <FileText className="text-accent-trace animate-pulse" size={28} />
                   <span className="font-mono text-xs">{t('cv.loading')}</span>
                 </div>
               )}
               {hasError && (
                 <div className="flex flex-col items-center gap-3 py-24 text-center text-text-secondary">
-                  <FileText className="text-accent-signal-text" size={28} />
+                  <FileText className="text-accent-signal" size={28} />
                   <span className="font-mono text-xs">{t('cv.error')}</span>
                 </div>
               )}

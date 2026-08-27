@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Terminal } from 'lucide-react';
+import { Terminal, Code, Zap } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
 
 export const LoadingScreen = ({ onLoadingComplete }) => {
@@ -12,12 +12,13 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
 
   useEffect(() => {
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
+      setProgress(prev => {
         if (prev >= 100) {
           clearInterval(progressInterval);
           return 100;
         }
-        return Math.min(prev + 1.5, 100);
+        const increment = 1.5;
+        return Math.min(prev + increment, 100);
       });
     }, 50);
 
@@ -54,8 +55,24 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
         isExiting ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      {/* Grid de fundo, mesmo padrão do Hero — sem partículas soltas */}
-      <div className="absolute inset-0 bg-blueprint-grid pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${Math.random() * 4 + 1}px`,
+              height: `${Math.random() * 4 + 1}px`,
+              background: `rgba(168, 85, 247, ${Math.random() * 0.6 + 0.2})`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${4 + Math.random() * 6}s`,
+              filter: 'blur(1px)',
+            }}
+          />
+        ))}
+      </div>
 
       <div className="relative z-10 flex flex-col items-center px-6 max-w-md w-full">
         <div
@@ -63,12 +80,30 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
             showText ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
           }`}
         >
-          <div className="relative w-24 h-24 flex items-center justify-center border border-line rounded-lg bg-bg-surface">
-            <Terminal className="w-10 h-10 text-accent-trace-text animate-pulse" />
-            <span
-              className="absolute -bottom-1.5 -right-1.5 w-3 h-3 rounded-full bg-accent-signal animate-pulse-signal"
-              aria-hidden="true"
-            />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-32 h-32 rounded-full border border-line animate-ping" style={{ animationDuration: '2s' }} />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-32 h-32 rounded-full border border-line animate-ping animation-delay-500" style={{ animationDuration: '2s' }} />
+            </div>
+
+            <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-bg-surface via-bg-surface to-bg-surface flex items-center justify-center shadow-2xl animate-gradient">
+              <Terminal className="w-16 h-16 text-text-primary animate-pulse" />
+            </div>
+
+            <div className="absolute inset-0 animate-spin-slow">
+              <Code
+                className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-accent-trace"
+                size={20}
+              />
+            </div>
+            <div className="absolute inset-0 animate-spin-slow animation-delay-1000">
+              <Zap
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 text-accent-signal"
+                size={20}
+              />
+            </div>
           </div>
         </div>
 
@@ -77,8 +112,12 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
             showText ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          <h2 className="text-2xl font-display font-bold text-text-primary mb-2">@higorxyz</h2>
-          <p className="text-text-secondary text-sm font-mono animate-pulse">{loadingText}</p>
+          <h2 className="text-3xl font-bold text-text-primary mb-2 animate-gradient pb-1">
+            @higorxyz
+          </h2>
+          <p className="text-text-secondary text-sm font-mono animate-pulse">
+            {loadingText}
+          </p>
         </div>
 
         <div
@@ -86,17 +125,34 @@ export const LoadingScreen = ({ onLoadingComplete }) => {
             showText ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          <div className="relative w-full h-1.5 bg-bg-surface rounded-full overflow-hidden border border-line">
+          <div className="relative w-full h-2 bg-bg-primary rounded-full overflow-hidden border border-line">
             <div
-              className="h-full bg-accent-signal rounded-full transition-all duration-100 ease-linear"
+              className="h-full bg-gradient-to-r from-bg-surface via-bg-surface to-bg-surface rounded-full transition-all duration-100 ease-linear relative overflow-hidden bg-[length:200%_100%] animate-gradient"
               style={{ width: `${progress}%` }}
-            />
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+            </div>
+
+            {progress > 0 && (
+              <div
+                className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-lg"
+                style={{ left: `${Math.max(progress - 2, 0)}%` }}
+              />
+            )}
           </div>
 
           <div className="flex justify-between items-center mt-2 text-xs">
-            <span className="text-accent-trace-text font-mono">{Math.floor(progress)}%</span>
+            <span className="text-accent-trace font-mono">{Math.floor(progress)}%</span>
             <span className="text-text-secondary font-mono">{t('loading.loading')}</span>
           </div>
+        </div>
+
+        <div
+          className={`mt-8 text-xs text-gray-600 font-mono transition-all duration-1000 delay-500 ${
+            showText ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          v2.0.0 • {t('loading.version')}
         </div>
       </div>
     </div>

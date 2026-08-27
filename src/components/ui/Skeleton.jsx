@@ -1,5 +1,5 @@
 export const Skeleton = ({ className = '', variant = 'default' }) => {
-  const baseClass = 'animate-pulse bg-gradient-to-r from-bg-surface via-bg-surface-hover to-bg-surface bg-[length:200%_100%] animate-shimmer';
+  const baseClass = 'animate-pulse bg-gradient-to-r from-bg-surface  to-bg-surface bg-[length:200%_100%] animate-shimmer';
   
   const variants = {
     default: 'rounded',
@@ -73,10 +73,12 @@ export const SkillCardSkeleton = () => {
 
 export const StatCardSkeleton = () => {
   return (
-    <div className="p-4 sm:p-6 md:p-8 border-line">
-      <Skeleton variant="default" className="w-5 h-5 mb-2 sm:mb-3" />
-      <Skeleton variant="title" className="w-16 h-8 sm:h-9 mb-1" />
-      <Skeleton variant="text" className="w-20" />
+    <div className="bg-bg-surface border border-line p-8 rounded-2xl">
+      <div className="flex justify-center mb-4">
+        <Skeleton variant="circle" className="w-10 h-10" />
+      </div>
+      <Skeleton variant="title" className="w-20 h-10 mb-2 mx-auto" />
+      <Skeleton variant="text" className="w-24 mx-auto" />
     </div>
   );
 };

@@ -137,15 +137,18 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
 
       const requestFallback = async () => {
         try {
-          // Antes batia direto em api.github.com/.../events do navegador.
-          // Agora passa por /api/github-events (servidor + cache).
-          const response = await fetch('/api/github-events');
+          const headers = {};
+
+          const response = await fetch(
+            `https://api.github.com/users/${username}/events/public?per_page=100`,
+            { headers }
+          );
 
           if (!response.ok) {
             return null;
           }
 
-          const { events } = await response.json();
+          const events = await response.json();
           const map = new Map();
 
           events.forEach((event) => {
@@ -233,19 +236,19 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
 
   const getContributionColors = (count) => {
     const darkPalette = [
-      { max: 0, bg: '#162232', border: '#22334a' },
-      { max: 2, bg: '#542d1f', border: '#783c27' },
-      { max: 5, bg: '#9a4220', border: '#be5326' },
-      { max: 8, bg: '#e05925', border: '#f66a31' },
-      { max: Infinity, bg: '#ff7b42', border: '#ffa57a' }
+      { max: 0, bg: '#151f2d', border: '#24344a' },
+      { max: 2, bg: '#4a271f', border: '#713525' },
+      { max: 5, bg: '#a84327', border: '#c95532' },
+      { max: 8, bg: '#ff6b35', border: '#ff8456' },
+      { max: Infinity, bg: '#ffb08f', border: '#ffd0bf' }
     ];
 
     const lightPalette = [
-      { max: 0, bg: '#f6f8fa', border: '#eaecef' },
-      { max: 2, bg: '#ffeede', border: '#ffd8c2' },
-      { max: 5, bg: '#ffc7a8', border: '#ffaa80' },
-      { max: 8, bg: '#ffa175', border: '#ff8350' },
-      { max: Infinity, bg: '#f97316', border: '#ea580c' }
+      { max: 0, bg: '#ebedf0', border: '#d0d7de' },
+      { max: 2, bg: '#ffe2d8', border: '#ffc1ad' },
+      { max: 5, bg: '#ffb39b', border: '#ff9070' },
+      { max: 8, bg: '#ff6b35', border: '#e95522' },
+      { max: Infinity, bg: '#c9421f', border: '#a8371d' }
     ];
 
     const palette = isDarkMode ? darkPalette : lightPalette;
@@ -267,16 +270,20 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
   if (loading) {
     return (
       <div className={`rounded-lg p-4 sm:p-6 border ${
-        'bg-bg-surface border-line shadow-lg'
+        isDarkMode
+          ? 'bg-gradient-to-br from-bg-surface to-bg-surface border-line shadow-lg '
+          : 'bg-white border-line shadow-lg '
       }`}>
         <h3 className={`text-xs sm:text-sm font-normal mb-3 sm:mb-4 ${
-          'text-text-secondary'
+          isDarkMode ? 'text-text-secondary' : 'text-gray-600'
         }`}>
           {t('contributions.loading')}
         </h3>
         <div className="flex items-center justify-center py-12 sm:py-20">
           <div className={`animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-4 ${
-            'border-line border-t-transparent'
+            isDarkMode
+              ? 'border-line border-t-transparent'
+              : 'border-line border-t-transparent'
           }`} />
         </div>
       </div>
@@ -302,19 +309,21 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
 
   return (
     <div className={`rounded-lg p-4 sm:p-5 border ${
-      'bg-bg-surface border-line shadow-lg'
+      isDarkMode
+        ? 'bg-gradient-to-br from-bg-surface to-bg-surface border-line shadow-lg '
+        : 'bg-white border-line shadow-lg '
     }`}>
       <div className="flex flex-col items-center gap-2">
         <div className="w-full max-w-[940px] flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b border-line pb-4">
           <div>
-            <p className="font-mono text-xs text-accent-signal-text mb-1">GITHUB / ACTIVITY</p>
+            <p className="font-mono text-xs text-accent-signal mb-1">GITHUB / ACTIVITY</p>
             <h3 className="text-base sm:text-lg font-semibold text-text-primary">{t('contributions.heading')}</h3>
           </div>
           <span className="font-mono text-[10px] sm:text-xs text-text-secondary">github.com/{username}</span>
         </div>
         <div
           className={`w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm sm:text-base ${
-          'text-text-secondary'
+          isDarkMode ? 'text-text-secondary' : 'text-gray-600'
         }`}
           style={infoWidthStyle}
         >
@@ -322,7 +331,7 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
             {totalFormatted} {t('contributions.title')}
           </span>
           <div className={`flex items-center justify-center sm:justify-end gap-3 text-xs sm:text-sm ${
-            'text-text-secondary'
+            isDarkMode ? 'text-text-secondary' : 'text-text-secondary'
           }`}>
             <span>{formatStreak(currentStreak, 'current')}</span>
             <span>{formatStreak(longestStreak, 'longest')}</span>
@@ -342,7 +351,7 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
                     <span
                       key={dayIndex}
                       className={`absolute left-0 -translate-y-1/2 text-[9px] sm:text-[11px] ${
-                        'text-text-secondary'
+                        isDarkMode ? 'text-text-secondary' : 'text-text-secondary'
                       }`}
                       style={{ top }}
                     >
@@ -364,7 +373,7 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
                     <span
                       key={`${month.label}-${month.weekIndex}`}
                       className={`absolute text-[9px] sm:text-[11px] ${
-                        'text-text-secondary'
+                        isDarkMode ? 'text-text-secondary' : 'text-text-secondary'
                       }`}
                       style={{ left: month.weekIndex * (CELL_SIZE + CELL_GAP) }}
                     >
@@ -412,7 +421,7 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
 
         <div
           className={`w-full flex items-center justify-center sm:justify-end gap-1 text-[9px] sm:text-[11px] ${
-          'text-text-secondary'
+          isDarkMode ? 'text-text-secondary' : 'text-gray-600'
         }`}
           style={infoWidthStyle}
         >

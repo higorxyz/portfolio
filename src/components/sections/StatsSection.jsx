@@ -16,10 +16,10 @@ export const StatsSection = ({ stats, loading, error }) => {
   const forksCount = useCounter(stats.totalForks, 2000, statsVisible && !loading);
 
   const metrics = [
-    { icon: <Rocket className="w-5 h-5 text-accent-trace-text mb-2 sm:mb-3" />, value: error ? '—' : projectsCount, label: t('stats.projects') },
-    { icon: <Star className="w-5 h-5 text-accent-trace-text mb-2 sm:mb-3" />, value: error ? '—' : starsCount, label: t('stats.stars') },
-    { icon: <GitFork className="w-5 h-5 text-accent-trace-text mb-2 sm:mb-3" />, value: error ? '—' : forksCount, label: t('stats.forks') },
-    { icon: <Award className="w-5 h-5 text-accent-trace-text mb-2 sm:mb-3" />, value: 2, suffix: '+', label: t('stats.experience') },
+    { icon: <Rocket className="w-5 h-5 text-accent-trace mb-2 sm:mb-3" />, value: error ? '—' : projectsCount, label: t('stats.projects') },
+    { icon: <Star className="w-5 h-5 text-accent-trace mb-2 sm:mb-3" />, value: error ? '—' : starsCount, label: t('stats.stars') },
+    { icon: <GitFork className="w-5 h-5 text-accent-trace mb-2 sm:mb-3" />, value: error ? '—' : forksCount, label: t('stats.forks') },
+    { icon: <Award className="w-5 h-5 text-accent-trace mb-2 sm:mb-3" />, value: 2, suffix: '+', label: t('stats.experience') },
   ];
 
   return (

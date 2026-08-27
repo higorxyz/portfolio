@@ -1,11 +1,8 @@
-import { useMemo, useState, useCallback } from 'react';
-
-const PAGE_SIZE = 6;
+import { useMemo, useState } from 'react';
 
 export const useProjectFilters = (projects = []) => {
   const [filterTech, setFilterTech] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const allTechs = useMemo(() => (
     ['all', ...new Set(projects.flatMap((project) => project.tech || []))]
@@ -30,38 +27,15 @@ export const useProjectFilters = (projects = []) => {
       });
     }
 
-    return filtered;
+    return filtered.slice(0, 6);
   }, [projects, filterTech, searchTerm]);
-
-  // Reseta contagem visível quando filtros mudam
-  const handleSetFilterTech = useCallback((tech) => {
-    setFilterTech(tech);
-    setVisibleCount(PAGE_SIZE);
-  }, []);
-
-  const handleSetSearchTerm = useCallback((term) => {
-    setSearchTerm(term);
-    setVisibleCount(PAGE_SIZE);
-  }, []);
-
-  const showMore = useCallback(() => {
-    setVisibleCount((prev) => prev + PAGE_SIZE);
-  }, []);
-
-  const visibleProjects = useMemo(
-    () => filteredProjects.slice(0, visibleCount),
-    [filteredProjects, visibleCount]
-  );
 
   return {
     filterTech,
-    setFilterTech: handleSetFilterTech,
+    setFilterTech,
     searchTerm,
-    setSearchTerm: handleSetSearchTerm,
-    filteredProjects: visibleProjects,
-    totalFiltered: filteredProjects.length,
-    hasMore: visibleCount < filteredProjects.length,
-    showMore,
+    setSearchTerm,
+    filteredProjects,
     allTechs
   };
 };
