@@ -1,0 +1,115 @@
+/* ===== Design tokens — Blueprint / Build Log ===== */
+/* Valores por tema em variáveis CSS; o Tailwind v4 gera as classes de
+   utilidade (bg-bg-primary, text-text-secondary, etc.) a partir do bloco
+   @theme abaixo, que aponta pra essas variáveis. Trocar de tema = trocar o
+   valor da variável — sem precisar de override em cascata por componente. */
+:root {
+  --bg-primary-value: #0b1420;
+  --bg-surface-value: #121d2e;
+  --bg-surface-hover-value: #1a2740;
+  --text-primary-value: #edf1f7;
+  --text-secondary-value: #8fa1b8;
+  --line-value: #24344a;
+  /* Uso só como texto/ícone (currentColor): o tom vivo dos acentos
+     (#ff6b35 / #4fd1c5) passa AA em cima do fundo escuro, mas cai pra
+     ~2.6:1 e ~1.7:1 em cima do fundo claro — falha até o mínimo de UI
+     (3:1). bg-accent-signal/trace continuam com o tom vivo original nos
+     dois temas (funciona como pílula/borda, contraste é outra conta). */
+  --accent-signal-text-value: #ff6b35;
+  --accent-trace-text-value: #4fd1c5;
+  --on-accent-value: #0b1420;
+}
+
+.light-theme {
+  --bg-primary-value: #f8fafc;
+  --bg-surface-value: #ffffff;
+  --bg-surface-hover-value: #f1f5f9;
+  --text-primary-value: #0f172a;
+  --text-secondary-value: #475569;
+  --line-value: #e2e8f0;
+  --accent-signal-text-value: #b8461a; /* 4.74:1 sobre bg-primary claro */
+  --accent-trace-text-value: #0f7a70;  /* 4.61:1 sobre bg-primary claro */
+  --on-accent-value: #ffffff;
+}
+
+@theme {
+  --color-bg-primary: var(--bg-primary-value);
+  --color-bg-surface: var(--bg-surface-value);
+  --color-bg-surface-hover: var(--bg-surface-hover-value);
+  --color-text-primary: var(--text-primary-value);
+  --color-text-secondary: var(--text-secondary-value);
+  --color-line: var(--line-value);
+  --color-accent-signal: #ff6b35;
+  --color-accent-signal-dim: #ff6b3526;
+  --color-accent-signal-text: var(--accent-signal-text-value);
+  --color-accent-trace: #4fd1c5;
+  --color-accent-trace-dim: #4fd1c526;
+  --color-accent-trace-text: var(--accent-trace-text-value);
+  --color-on-accent: var(--on-accent-value);
+
+  --font-display: 'JetBrains Mono', ui-monospace, monospace;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s ease-in-out infinite;
+  --animate-pulse-signal: pulse-signal 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-signal {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ===== Utilitários compartilhados (sem mudança de comportamento) ===== */
+
+.card-motion {
+  transition: box-shadow 0.3s ease,
+              background 0.3s ease,
+              border-color 0.3s ease;
+  will-change: transform, box-shadow;
+}
+
+.card-motion-input {
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+}
+
+/* Grid de fundo estilo blueprint/papel milimetrado — só onde referenciado
+   via className="bg-blueprint-grid" (Hero). Opacidade baixa de propósito. */
+.bg-blueprint-grid {
+  background-image:
+    linear-gradient(var(--line-value) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-value) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.35;
+}
+
+.light-theme .bg-blueprint-grid {
+  opacity: 0.12;
+}
+
+/* No modo claro, halos decorativos (blur-3xl) ficam pesados com 10-12% de
+   opacidade. Reduz pra ~4% pra funcionarem como reflexos perolados sutis. */
+.light-theme .blur-3xl {
+  opacity: 0.35;
+}
+
+/* Reduced motion: desativa a sequência de entrada e reveals */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
