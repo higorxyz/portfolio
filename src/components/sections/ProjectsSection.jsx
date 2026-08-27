@@ -1,19 +1,23 @@
 import { useMemo } from 'react';
-import { Briefcase, Filter, Star, GitFork, Github, ExternalLink } from 'lucide-react';
+import { Briefcase, Filter, Star, GitFork, Github, ExternalLink, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useTheme } from '../../hooks/useTheme';
 import { useProjectFilters } from '../../hooks/useProjectFilters';
 import { ProjectCardSkeleton } from '../ui';
 import { SearchBar } from '../forms';
 import { ReadmeViewer } from '../modals';
 import { ContributionGraph } from '.';
+import { FeaturedProjects } from './FeaturedProjects';
 import { getLanguageColor } from '../../utils/languageColors';
 import { getLanguageIcon } from '../../utils/languageIcons';
 
 export const ProjectsSection = ({ projects, loading, onSelectProject, username = 'higorxyz' }) => {
   const { t } = useLanguage();
-  const { filterTech, setFilterTech, searchTerm, setSearchTerm, filteredProjects, allTechs } = useProjectFilters(projects);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const { filterTech, setFilterTech, searchTerm, setSearchTerm, filteredProjects, totalFiltered, hasMore, showMore, allTechs } = useProjectFilters(projects);
 
-  const resultsCount = filteredProjects.length;
+  const resultsCount = totalFiltered;
   const technologies = useMemo(() => allTechs, [allTechs]);
 
   return (
@@ -21,17 +25,19 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 sm:mb-10">
           <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
-            <span className="font-mono text-xs text-accent-signal">02 /</span>
-            <Briefcase className="text-accent-trace w-5 h-5 sm:w-6 sm:h-6" />
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary">
+            <span className="font-mono text-xs text-accent-signal-text">02 /</span>
+            <Briefcase className="text-accent-trace-text w-5 h-5 sm:w-6 sm:h-6" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary">
               {t('projects.title')}
-            </h3>
+            </h2>
           </div>
         <p className="text-center sm:text-left text-text-secondary mb-6 sm:mb-10 text-sm sm:text-base sm:pl-11">
           {t('projects.subtitle')}
-          {!loading && <span className="text-accent-trace font-semibold"> {t('projects.autoUpdate')}</span>}
+          {!loading && <span className="text-accent-trace-text font-semibold"> {t('projects.autoUpdate')}</span>}
         </p>
         </div>
+
+        <FeaturedProjects />
 
         <SearchBar
           onSearch={setSearchTerm}
@@ -39,21 +45,41 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
           totalResults={searchTerm ? resultsCount : undefined}
         />
 
-        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-10 flex-wrap px-2">
-          <Filter size={18} className="text-accent-trace hidden sm:block" />
-          {technologies.map((tech) => (
-            <button
-              key={tech}
-              onClick={() => setFilterTech(tech)}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-semibold text-xs sm:text-sm ${
-                filterTech === tech
-                  ? 'bg-accent-signal shadow-lg '
-                  : 'bg-bg-surface border border-line hover:bg-bg-surface'
-              }`}
-            >
-              {tech}
-            </button>
-          ))}
+        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-8 sm:mb-12 flex-wrap max-w-4xl mx-auto px-2">
+          <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 font-mono text-xs text-text-secondary mr-1">
+            <Filter size={13} className="text-accent-trace-text" />
+            <span>{t('projects.filter')}:</span>
+          </div>
+
+          {technologies.map((tech) => {
+            const isAll = tech === 'all';
+            const isSelected = filterTech === tech;
+            const label = isAll ? t('projects.all') : tech;
+            const Icon = isAll ? null : getLanguageIcon(tech);
+            const color = isAll ? undefined : getLanguageColor(tech, isDark);
+
+            return (
+              <button
+                key={tech}
+                type="button"
+                onClick={() => setFilterTech(tech)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs sm:text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent-signal ${
+                  isSelected
+                    ? 'bg-accent-signal text-on-accent font-bold shadow-md border border-accent-signal'
+                    : 'bg-bg-surface border border-line text-text-secondary hover:text-text-primary hover:border-accent-trace/50 hover:bg-bg-surface-hover'
+                }`}
+              >
+                {Icon && (
+                  <Icon
+                    size={14}
+                    style={{ color: isSelected ? 'currentColor' : color }}
+                    className="shrink-0"
+                  />
+                )}
+                <span>{label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {loading && (
@@ -81,12 +107,12 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
                       <ProjectIcon 
                         size={40} 
                         className="sm:w-10 sm:h-10 w-9 h-9 group-hover:scale-125 transition-transform" 
-                        style={{ color: getLanguageColor(project.language) }}
+                        style={{ color: getLanguageColor(project.language, isDark) }}
                       />
                       <div>
                         <span 
                           className="font-semibold text-xs sm:text-sm"
-                          style={{ color: getLanguageColor(project.language) }}
+                          style={{ color: getLanguageColor(project.language, isDark) }}
                         >
                           {project.language || 'Code'}
                         </span>
@@ -94,11 +120,11 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
                     </div>
                     <div className="flex flex-col gap-1.5 sm:gap-2 items-end">
                       {project.preview ? (
-                        <div className="bg-accent-trace/15 text-accent-trace px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold">
+                        <div className="bg-accent-trace/15 text-accent-trace-text px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold">
                           {t('projects.preview')}
                         </div>
                       ) : project.featured && (
-                        <div className="bg-accent-signal px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                        <div className="bg-accent-signal text-on-accent px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-bold flex items-center gap-1">
                           <Star size={12} className="sm:w-3.5 sm:h-3.5" /> {t('projects.featured')}
                         </div>
                       )}
@@ -116,9 +142,9 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
                     </div>
                   </div>
 
-                  <h4 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 group-hover:text-accent-trace transition-colors">
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 group-hover:text-accent-trace-text transition-colors">
                     {project.title}
-                  </h4>
+                  </h3>
                   <div className="text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed flex-grow" onClick={(event) => event.stopPropagation()}>
                     <ReadmeViewer
                       repoName={project.repoName}
@@ -144,7 +170,7 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
                     {project.tech.slice(0, 4).map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 sm:px-3 py-0.5 sm:py-1 bg-bg-surface text-accent-trace border border-line rounded-full text-xs hover:bg-bg-surface transition-colors flex items-center"
+                        className="px-2 sm:px-3 py-0.5 sm:py-1 bg-bg-surface text-accent-trace-text border border-line rounded-full text-xs hover:bg-bg-surface transition-colors flex items-center"
                       >
                         {tech}
                       </span>
@@ -157,7 +183,7 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(event) => event.stopPropagation()}
-                      className="flex-1 px-3 sm:px-4 py-2 bg-accent-signal rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 hover:scale-105 transition-transform"
+                      className="flex-1 px-3 sm:px-4 py-2 bg-accent-signal text-on-accent rounded-lg font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 hover:scale-105 transition-transform"
                     >
                       <ExternalLink size={14} className="sm:w-4 sm:h-4" /> {project.status === 'live' ? t('projects.viewSite') : t('projects.viewRepo')}
                     </a>
@@ -166,6 +192,7 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(event) => event.stopPropagation()}
+                      aria-label={`GitHub — ${project.title}`}
                       className="px-3 sm:px-4 py-2 bg-bg-surface border border-line rounded-lg hover:bg-bg-surface transition-colors flex items-center justify-center"
                     >
                       <Github size={14} className="sm:w-4 sm:h-4" />
@@ -179,9 +206,21 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
 
         {resultsCount === 0 && !loading && (
           <div className="border border-line border-dashed bg-bg-surface/40 px-6 py-10 sm:py-14 text-center">
-            <p className="font-mono text-xs text-accent-signal mb-3">PROJECTS / NO DATA</p>
+            <p className="font-mono text-xs text-accent-signal-text mb-3">PROJECTS / NO DATA</p>
             <p className="text-text-secondary text-base sm:text-lg">{t('projects.noData')}</p>
             <p className="text-text-secondary/70 text-sm mt-2">{t('projects.noDataHint')}</p>
+          </div>
+        )}
+
+        {!loading && hasMore && (
+          <div className="text-center mt-6 sm:mt-8">
+            <button
+              onClick={showMore}
+              className="inline-flex items-center gap-2 px-6 py-2.5 border border-line bg-bg-surface hover:bg-bg-surface-hover rounded-lg font-semibold text-sm text-text-secondary hover:text-text-primary transition-colors"
+            >
+              <ChevronDown size={16} />
+              {t('projects.showMore') || 'Ver mais projetos'}
+            </button>
           </div>
         )}
 
@@ -190,7 +229,7 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
             href="https://github.com/higorxyz"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-accent-signal rounded-full font-bold text-sm sm:text-base lg:text-lg hover:scale-110 transition-transform shadow-subtle-lg"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-accent-signal text-on-accent rounded-full font-bold text-sm sm:text-base lg:text-lg hover:scale-110 transition-transform shadow-subtle-lg"
           >
             <Github size={20} className="sm:w-5 sm:h-5" /> {t('projects.viewMoreGitHub')}
           </a>

@@ -10,15 +10,26 @@
   --text-primary-value: #edf1f7;
   --text-secondary-value: #8fa1b8;
   --line-value: #24344a;
+  /* Uso só como texto/ícone (currentColor): o tom vivo dos acentos
+     (#ff6b35 / #4fd1c5) passa AA em cima do fundo escuro, mas cai pra
+     ~2.6:1 e ~1.7:1 em cima do fundo claro — falha até o mínimo de UI
+     (3:1). bg-accent-signal/trace continuam com o tom vivo original nos
+     dois temas (funciona como pílula/borda, contraste é outra conta). */
+  --accent-signal-text-value: #ff6b35;
+  --accent-trace-text-value: #4fd1c5;
+  --on-accent-value: #0b1420;
 }
 
 .light-theme {
-  --bg-primary-value: #edf2f6;
+  --bg-primary-value: #f8fafc;
   --bg-surface-value: #ffffff;
-  --bg-surface-hover-value: #e5edf3;
-  --text-primary-value: #101826;
-  --text-secondary-value: #4b5a6e;
-  --line-value: #c6d3df;
+  --bg-surface-hover-value: #f1f5f9;
+  --text-primary-value: #0f172a;
+  --text-secondary-value: #475569;
+  --line-value: #e2e8f0;
+  --accent-signal-text-value: #b8461a; /* 4.74:1 sobre bg-primary claro */
+  --accent-trace-text-value: #0f7a70;  /* 4.61:1 sobre bg-primary claro */
+  --on-accent-value: #ffffff;
 }
 
 @theme {
@@ -30,8 +41,11 @@
   --color-line: var(--line-value);
   --color-accent-signal: #ff6b35;
   --color-accent-signal-dim: #ff6b3526;
+  --color-accent-signal-text: var(--accent-signal-text-value);
   --color-accent-trace: #4fd1c5;
   --color-accent-trace-dim: #4fd1c526;
+  --color-accent-trace-text: var(--accent-trace-text-value);
+  --color-on-accent: var(--on-accent-value);
 
   --font-display: 'JetBrains Mono', ui-monospace, monospace;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -81,7 +95,13 @@
 }
 
 .light-theme .bg-blueprint-grid {
-  opacity: 0.16;
+  opacity: 0.12;
+}
+
+/* No modo claro, halos decorativos (blur-3xl) ficam pesados com 10-12% de
+   opacidade. Reduz pra ~4% pra funcionarem como reflexos perolados sutis. */
+.light-theme .blur-3xl {
+  opacity: 0.35;
 }
 
 /* Reduced motion: desativa a sequência de entrada e reveals */

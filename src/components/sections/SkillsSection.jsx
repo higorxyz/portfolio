@@ -1,7 +1,11 @@
 import { Code } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
 
-export const SkillsSection = () => {
+// Props skills e loading vêm de App.jsx (dados dinâmicos do GitHub) mas
+// esta seção usa lista curada de habilidades de propósito — mostra stack
+// técnica completa, não só linguagens que aparecem nos repos.
+// eslint-disable-next-line no-unused-vars
+export const SkillsSection = ({ skills, loading } = {}) => {
   const { t } = useLanguage();
 
   const skillsData = [
@@ -65,11 +69,11 @@ export const SkillsSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 sm:mb-10">
           <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
-            <span className="font-mono text-xs text-accent-signal">03 /</span>
-            <Code className="text-accent-trace w-5 h-5 sm:w-6 sm:h-6" />
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary">
+            <span className="font-mono text-xs text-accent-signal-text">03 /</span>
+            <Code className="text-accent-trace-text w-5 h-5 sm:w-6 sm:h-6" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary">
               {t('skills.title')}
-            </h3>
+            </h2>
           </div>
           <p className="text-center sm:text-left text-text-secondary text-sm sm:text-base max-w-2xl sm:pl-10">
             {t('skills.subtitle')}
@@ -81,10 +85,10 @@ export const SkillsSection = () => {
             {skillsData.map(({ title, accent, skills }, groupIndex) => (
               <div key={title} className="py-5 sm:py-6 border-b border-line">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className={`font-mono text-xs ${accent === 'signal' ? 'text-accent-signal' : 'text-accent-trace'}`}>
+                  <span className={`font-mono text-xs ${accent === 'signal' ? 'text-accent-signal-text' : 'text-accent-trace-text'}`}>
                     0{groupIndex + 1}
                   </span>
-                  <h4 className="font-mono text-sm sm:text-base font-semibold text-text-primary">{title}</h4>
+                  <h3 className="font-mono text-sm sm:text-base font-semibold text-text-primary">{title}</h3>
                 </div>
                 <div className="flex flex-wrap gap-x-4 gap-y-2 pl-8">
                   {skills.map((skill) => (
@@ -99,7 +103,7 @@ export const SkillsSection = () => {
           </div>
 
           <div className="lg:pt-5">
-            <p className="font-mono text-xs text-accent-signal mb-4">{t('skills.noteLabel')}</p>
+            <p className="font-mono text-xs text-accent-signal-text mb-4">{t('skills.noteLabel')}</p>
             <p className="text-2xl sm:text-3xl md:text-4xl font-display font-bold leading-tight text-text-primary mb-6">
               {t('skills.noteTitle')}
             </p>
@@ -107,8 +111,8 @@ export const SkillsSection = () => {
               {t('skills.noteText')}
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-3 font-mono text-xs text-text-secondary">
-              <span><strong className="text-accent-trace">01</strong> {t('skills.noteOne')}</span>
-              <span><strong className="text-accent-trace">02</strong> {t('skills.noteTwo')}</span>
+              <span><strong className="text-accent-trace-text">01</strong> {t('skills.noteOne')}</span>
+              <span><strong className="text-accent-trace-text">02</strong> {t('skills.noteTwo')}</span>
             </div>
           </div>
         </div>

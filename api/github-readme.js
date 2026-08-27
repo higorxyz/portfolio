@@ -5,7 +5,7 @@
 //
 // Uso: GET /api/github-readme?repo=nome-do-repositorio
 
-const GITHUB_USERNAME = 'higorxyz';
+const GITHUB_USERNAME = process.env.GITHUB_USERNAME || 'higorxyz';
 
 export default async function handler(req, res) {
   const { repo } = req.query;

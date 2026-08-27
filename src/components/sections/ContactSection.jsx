@@ -38,11 +38,11 @@ export const ContactSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 sm:mb-10">
           <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
-            <span className="font-mono text-xs text-accent-signal">04 /</span>
-            <Mail className="text-accent-trace w-5 h-5 sm:w-6 sm:h-6" />
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary">
+            <span className="font-mono text-xs text-accent-signal-text">04 /</span>
+            <Mail className="text-accent-trace-text w-5 h-5 sm:w-6 sm:h-6" />
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary">
               {t('contact.title')}
-            </h3>
+            </h2>
           </div>
         <p className="text-center sm:text-left text-text-secondary text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl sm:pl-11 leading-relaxed px-4 sm:px-0">
           {t('contact.subtitle')}
@@ -64,7 +64,7 @@ export const ContactSection = () => {
                   onChange={handleFormChange}
                   placeholder={t('contact.form.name')}
                   required
-                  className="card-motion-input w-full bg-bg-primary/50 border border-line text-text-primary px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-line focus:shadow-lg focus:"
+                  className="card-motion-input w-full bg-bg-primary/50 border border-line text-text-primary px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-accent-trace focus:shadow-lg"
                 />
               </div>
               <div>
@@ -79,7 +79,7 @@ export const ContactSection = () => {
                   onChange={handleFormChange}
                   placeholder={t('contact.form.email')}
                   required
-                  className="card-motion-input w-full bg-bg-primary/50 border border-line text-text-primary px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-line focus:shadow-lg focus:"
+                  className="card-motion-input w-full bg-bg-primary/50 border border-line text-text-primary px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-accent-trace focus:shadow-lg"
                 />
               </div>
               <div>
@@ -94,13 +94,13 @@ export const ContactSection = () => {
                   placeholder={t('contact.form.message')}
                   rows="5"
                   required
-                  className="card-motion-input w-full bg-bg-primary/50 border border-line text-text-primary px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-line focus:shadow-lg focus: resize-none"
+                  className="card-motion-input w-full bg-bg-primary/50 border border-line text-text-primary px-3 sm:px-4 py-2 sm:py-3 rounded-lg text-sm sm:text-base focus:outline-none focus:border-accent-trace focus:shadow-lg resize-none"
                 />
               </div>
               <button
                 type="submit"
                 disabled={formStatus === 'sending'}
-                className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-accent-signal rounded-lg font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform shadow-xl disabled:opacity-60"
+                className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-accent-signal text-on-accent rounded-lg font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:-translate-y-0.5 transition-transform shadow-xl disabled:opacity-60"
               >
                 {formStatus === 'sending' ? (
                   <>
@@ -133,23 +133,23 @@ export const ContactSection = () => {
 
           <div className="border-t border-line">
             <div className="flex items-start gap-4 py-5 border-b border-line">
-              <Mail className="text-accent-trace w-5 h-5 mt-1 shrink-0" />
+              <Mail className="text-accent-trace-text w-5 h-5 mt-1 shrink-0" />
               <div>
-                <h4 className="font-bold text-base mb-1">{t('contact.email')}</h4>
+                <h3 className="font-bold text-base mb-1">{t('contact.email')}</h3>
                 <p className="text-text-secondary text-sm">dev.higorxyz@gmail.com</p>
               </div>
             </div>
             <div className="flex items-start gap-4 py-5 border-b border-line">
-              <Globe className="text-accent-trace w-5 h-5 mt-1 shrink-0" />
+              <Globe className="text-accent-trace-text w-5 h-5 mt-1 shrink-0" />
               <div>
-                <h4 className="font-bold text-base mb-1">{t('contact.location')}</h4>
+                <h3 className="font-bold text-base mb-1">{t('contact.location')}</h3>
                 <p className="text-text-secondary text-sm">{t('contact.locationValue')}</p>
               </div>
             </div>
             <div className="flex items-start gap-4 py-5 border-b border-line">
-              <Zap className="text-accent-signal w-5 h-5 mt-1 shrink-0" />
+              <Zap className="text-accent-signal-text w-5 h-5 mt-1 shrink-0" />
               <div>
-                <h4 className="font-bold text-base mb-1">{t('contact.response')}</h4>
+                <h3 className="font-bold text-base mb-1">{t('contact.response')}</h3>
                 <p className="text-text-secondary text-sm">{t('contact.responseTime')}</p>
               </div>
             </div>
@@ -165,7 +165,7 @@ export const ContactSection = () => {
             aria-label="GitHub"
             className="card-motion w-11 h-11 bg-bg-surface border border-line rounded-lg flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
-            <SiGithub size={28} className="sm:w-8 sm:h-8" />
+            <SiGithub size={28} className="sm:w-8 sm:h-8" aria-hidden="true" />
           </a>
           <a
             href="https://www.linkedin.com/in/higorbatista"
@@ -174,7 +174,7 @@ export const ContactSection = () => {
             aria-label="LinkedIn"
             className="card-motion w-11 h-11 bg-bg-surface border border-line rounded-lg flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
-            <SiLinkedin size={28} className="sm:w-8 sm:h-8" />
+            <SiLinkedin size={28} className="sm:w-8 sm:h-8" aria-hidden="true" />
           </a>
           <a
             href="https://www.instagram.com/higorxyz/"
@@ -183,7 +183,7 @@ export const ContactSection = () => {
             aria-label="Instagram"
             className="card-motion w-11 h-11 bg-bg-surface border border-line rounded-lg flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
           >
-            <SiInstagram size={28} className="sm:w-8 sm:h-8" />
+            <SiInstagram size={28} className="sm:w-8 sm:h-8" aria-hidden="true" />
           </a>
         </div>
       </div>
