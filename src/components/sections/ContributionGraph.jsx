@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import { useLanguage } from '../../hooks/useLanguage';
 
@@ -128,6 +128,14 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
 
   const isDarkMode = theme === 'dark';
   const locale = language === 'en' ? 'en-US' : 'pt-BR';
+  const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    // No mobile, posiciona o scroll automaticamente nas semanas mais recentes
+    if (scrollContainerRef.current && window.innerWidth < 768) {
+      scrollContainerRef.current.scrollLeft = scrollContainerRef.current.scrollWidth;
+    }
+  }, [loading, timeline]);
 
   useEffect(() => {
     let isMounted = true;
@@ -329,7 +337,7 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
           </div>
         </div>
 
-        <div className="w-full overflow-x-auto contribution-graph-scroll">
+        <div ref={scrollContainerRef} className="w-full overflow-x-auto contribution-graph-scroll">
           <div className="min-w-max mx-auto px-2">
             <div className="flex gap-3" style={graphRowStyle}>
               <div
@@ -411,12 +419,16 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
         </div>
 
         <div
-          className={`w-full flex items-center justify-center sm:justify-end gap-1 text-[9px] sm:text-[11px] ${
+          className={`w-full flex items-center justify-between sm:justify-end gap-1 text-[9px] sm:text-[11px] ${
           'text-text-secondary'
         }`}
           style={infoWidthStyle}
         >
-          <span>{t('contributions.less')}</span>
+          <span className="sm:hidden font-mono text-[9px] text-accent-trace-text">
+            {language === 'en' ? '← scroll for history' : '← deslize p/ histórico'}
+          </span>
+          <div className="flex items-center gap-1">
+            <span>{t('contributions.less')}</span>
           {legendSteps.map((step) => {
             const { bg, border } = getContributionColors(step);
             return (
@@ -433,6 +445,7 @@ export const ContributionGraph = ({ username = 'higorxyz' }) => {
             );
           })}
           <span>{t('contributions.more')}</span>
+          </div>
         </div>
       </div>
     </div>

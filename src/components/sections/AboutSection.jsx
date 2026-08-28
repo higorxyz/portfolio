@@ -68,7 +68,7 @@ export const AboutSection = ({ stats }) => {
               <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500/80" />
               <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500/80" />
             </div>
-            <pre className="p-4 sm:p-6 font-mono text-sm sm:text-base overflow-x-auto whitespace-pre-wrap about-console-code">
+            <pre className="p-3.5 sm:p-6 font-mono text-[11px] sm:text-sm md:text-base overflow-x-auto whitespace-pre-wrap about-console-code leading-relaxed">
               <CodeHighlight code={codeBlock} />
             </pre>
           </div>
