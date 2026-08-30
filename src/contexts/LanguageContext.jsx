@@ -1,37 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { LanguageContext } from './LanguageContext.js';
 
-export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState(() => {
-    const saved = localStorage.getItem('language');
-    return saved || 'pt';
-  });
-
-  useEffect(() => {
-    localStorage.setItem('language', language);
-    document.documentElement.lang = language;
-  }, [language]);
-
-  const toggleLanguage = useCallback(() => {
-    setLanguage(prev => (prev === 'pt' ? 'en' : 'pt'));
-  }, []);
-
-  const translate = useCallback((key) => translations[language][key] || key, [language]);
-
-  const value = useMemo(() => ({
-    language,
-    setLanguage,
-    toggleLanguage,
-    t: translate
-  }), [language, toggleLanguage, translate]);
-
-  return (
-    <LanguageContext.Provider value={value}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
-
 const translations = {
   pt: {
     'nav.home': 'Início',
@@ -422,4 +391,35 @@ const translations = {
     'contributions.contribution': 'contribution',
     'contributions.contributions': 'contributions',
   }
+};
+
+export const LanguageProvider = ({ children }) => {
+  const [language, setLanguage] = useState(() => {
+    const saved = localStorage.getItem('language');
+    return saved || 'pt';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('language', language);
+    document.documentElement.lang = language;
+  }, [language]);
+
+  const toggleLanguage = useCallback(() => {
+    setLanguage(prev => (prev === 'pt' ? 'en' : 'pt'));
+  }, []);
+
+  const translate = useCallback((key) => translations[language][key] || key, [language]);
+
+  const value = useMemo(() => ({
+    language,
+    setLanguage,
+    toggleLanguage,
+    t: translate
+  }), [language, toggleLanguage, translate]);
+
+  return (
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
+  );
 };

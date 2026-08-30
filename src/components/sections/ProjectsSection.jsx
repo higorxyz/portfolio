@@ -45,8 +45,8 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
           totalResults={searchTerm ? resultsCount : undefined}
         />
 
-        <div className="flex items-center gap-1.5 sm:gap-2 mb-6 sm:mb-12 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center max-w-4xl mx-auto px-4 sm:px-2 pb-2 sm:pb-0 -mx-4 sm:mx-auto">
-          <div className="shrink-0 hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 font-mono text-xs text-text-secondary mr-1">
+        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-8 sm:mb-12 flex-wrap max-w-4xl mx-auto px-2">
+          <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 font-mono text-xs text-text-secondary mr-1">
             <Filter size={13} className="text-accent-trace-text" />
             <span>{t('projects.filter')}:</span>
           </div>
@@ -63,7 +63,7 @@ export const ProjectsSection = ({ projects, loading, onSelectProject, username =
                 key={tech}
                 type="button"
                 onClick={() => setFilterTech(tech)}
-                className={`shrink-0 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg font-mono text-xs sm:text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent-signal ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs sm:text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent-signal ${
                   isSelected
                     ? 'bg-accent-signal text-on-accent font-bold shadow-md border border-accent-signal'
                     : 'bg-bg-surface border border-line text-text-secondary hover:text-text-primary hover:border-accent-trace/50 hover:bg-bg-surface-hover'

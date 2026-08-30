@@ -98,27 +98,27 @@ export const NavigationBar = ({ activeSection, onNavigate, onDownloadCV }) => {
             </button>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-3 md:hidden">
+          <div className="flex items-center gap-3 md:hidden">
             <LanguageToggle />
             <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen((prev) => !prev)}
-              className="p-1.5 sm:p-2 text-text-primary hover:text-accent-trace-text transition-colors"
+              className="p-2"
               aria-label={isMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
               aria-expanded={isMenuOpen}
             >
-              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden mt-3 pt-3 pb-3 border-t border-line flex flex-col gap-1.5 animate-fadeIn">
+          <div className="md:hidden mt-3 pt-3 pb-2 border-t border-line flex flex-col gap-1 animate-fadeIn">
             {SECTION_KEYS.map((section) => (
               <button
                 key={section}
                 onClick={() => handleNavigate(section)}
-                className={`capitalize text-left py-2.5 px-3 rounded-lg transition-all duration-200 ease-out font-mono text-sm ${
+                className={`capitalize text-left py-2.5 px-3 rounded-lg transition-all duration-200 ease-out ${
                   activeSection === section
                     ? 'text-accent-trace-text bg-bg-surface font-semibold border-l-2 border-accent-signal'
                     : 'text-text-secondary hover:text-accent-trace-text hover:bg-bg-surface/60'
@@ -132,9 +132,9 @@ export const NavigationBar = ({ activeSection, onNavigate, onDownloadCV }) => {
                 onDownloadCV();
                 setIsMenuOpen(false);
               }}
-              className="mt-1.5 px-4 py-2.5 rounded-lg border border-line bg-bg-surface hover:bg-bg-surface-hover font-mono font-medium text-xs flex items-center justify-center gap-2 transition-all"
+              className="mt-2 px-4 py-2 rounded-lg border border-line bg-bg-surface hover:bg-bg-surface font-medium text-sm flex items-center justify-center gap-2 transition-all"
             >
-              <Download size={14} /> {t('about.downloadCV')}
+              <Download size={16} /> {t('about.downloadCV')}
             </button>
           </div>
         )}

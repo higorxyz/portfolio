@@ -35,22 +35,13 @@ export const StatsSection = ({ stats, loading, error }) => {
             <span className="ml-auto">github.com/higorxyz</span>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 divide-y divide-line lg:divide-y-0 lg:divide-x">
             {loading
               ? [...Array(4)].map((_, index) => <StatCardSkeleton key={index} />)
-              : metrics.map(({ icon, value, label, suffix = '' }, index) => (
-                  <div
-                    key={label}
-                    className={`p-3.5 sm:p-6 md:p-8 border-line ${
-                      index < 2 ? 'border-b lg:border-b-0' : ''
-                    } ${
-                      index % 2 === 0 ? 'border-r' : ''
-                    } ${
-                      index < 3 ? 'lg:border-r' : 'lg:border-r-0'
-                    }`}
-                  >
+              : metrics.map(({ icon, value, label, suffix = '' }) => (
+                  <div key={label} className="p-4 sm:p-6 md:p-8 border-line">
                     {icon}
-                    <div className="font-mono text-xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-1">
+                    <div className="font-mono text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary mb-1">
                       {value}
                       {suffix}
                     </div>

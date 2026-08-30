@@ -46,64 +46,64 @@ export const HeroSection = ({ onNavigate }) => {
             <span>{roles.join(' / ')}</span>
           </div>
 
-          <p className="font-mono text-xs sm:text-sm text-accent-signal-text mb-2 sm:mb-3 tracking-normal">01 / {t('hero.eyebrow')}</p>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight sm:leading-[1.05] text-text-primary max-w-2xl">
+          <p className="font-mono text-xs sm:text-sm text-accent-signal-text mb-3 tracking-normal">01 / {t('hero.eyebrow')}</p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-5 sm:mb-6 leading-[1.05] text-text-primary max-w-2xl">
             {t('hero.headline')}
           </h1>
 
-          <p className="text-sm sm:text-lg md:text-xl text-text-secondary mb-6 sm:mb-10 max-w-2xl leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-text-secondary mb-8 sm:mb-10 max-w-2xl leading-relaxed">
             {t('hero.description')}
           </p>
 
-          <div className="grid grid-cols-2 sm:flex sm:flex-row flex-wrap gap-2.5 sm:gap-4 mb-6 sm:mb-12">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-10 sm:mb-12">
             <button
               onClick={() => onNavigate('projetos')}
-              className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg bg-accent-signal text-on-accent font-display font-bold text-xs sm:text-base flex items-center justify-center gap-1.5 sm:gap-2 hover:opacity-90 transition-opacity"
+              className="w-full sm:w-auto px-6 py-3 rounded-lg bg-accent-signal text-on-accent font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
             >
-              <Rocket size={16} className="sm:w-[18px] sm:h-[18px]" /> {t('hero.viewProjects')}
+              <Rocket size={18} /> {t('hero.viewProjects')}
             </button>
             <button
               onClick={() => onNavigate('contato')}
-              className="w-full sm:w-auto card-motion transform px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg border border-line bg-transparent text-text-primary font-display font-bold text-xs sm:text-base flex items-center justify-center gap-1.5 sm:gap-2 hover:bg-bg-surface"
+              className="w-full sm:w-auto card-motion transform px-6 py-3 rounded-lg border border-line bg-transparent text-text-primary font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:bg-bg-surface"
             >
-              <Mail size={16} className="sm:w-[18px] sm:h-[18px]" /> {t('hero.contact')}
+              <Mail size={18} /> {t('hero.contact')}
             </button>
           </div>
 
-          <div className="flex gap-2.5 sm:gap-4">
+          <div className="flex gap-3 sm:gap-4">
             <a
               href="https://github.com/higorxyz"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
-              className="card-motion transform w-10 h-10 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
+              className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
             >
-              <Github size={18} className="sm:w-6 sm:h-6 text-text-primary" />
+              <Github size={20} className="sm:w-6 sm:h-6 text-text-primary" />
             </a>
             <a
               href="https://www.linkedin.com/in/higorbatista"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="card-motion transform w-10 h-10 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
+              className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
             >
-              <Linkedin size={18} className="sm:w-6 sm:h-6 text-text-primary" />
+              <Linkedin size={20} className="sm:w-6 sm:h-6 text-text-primary" />
             </a>
             <a
               href="https://www.instagram.com/higorxyz/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="card-motion transform w-10 h-10 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
+              className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
             >
-              <Instagram size={18} className="sm:w-6 sm:h-6 text-text-primary" />
+              <Instagram size={20} className="sm:w-6 sm:h-6 text-text-primary" />
             </a>
             <a
               href="mailto:dev.higorxyz@gmail.com"
               aria-label="Email"
-              className="card-motion transform w-10 h-10 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
+              className="card-motion transform w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-surface border border-line flex items-center justify-center hover:border-accent-signal hover:-translate-y-1"
             >
-              <Mail size={18} className="sm:w-6 sm:h-6 text-text-primary" />
+              <Mail size={20} className="sm:w-6 sm:h-6 text-text-primary" />
             </a>
           </div>
         </div>

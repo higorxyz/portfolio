@@ -256,10 +256,9 @@ function App() {
           {showScrollTop && (
             <button
               onClick={scrollToTop}
-              aria-label={language === 'en' ? 'Scroll to top' : 'Voltar ao topo'}
-              className="fixed bottom-4 sm:bottom-8 right-4 sm:right-8 w-10 h-10 sm:w-14 sm:h-14 bg-accent-signal text-on-accent rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:-translate-y-2 z-40 transition-all"
+              className="fixed bottom-6 sm:bottom-8 right-6 sm:right-8 w-12 h-12 sm:w-14 sm:h-14 bg-accent-signal text-on-accent rounded-full flex items-center justify-center shadow-2xl hover:scale-110 hover:-translate-y-2 z-50"
             >
-              <ArrowUp size={18} className="sm:w-6 sm:h-6" />
+              <ArrowUp size={20} className="sm:w-6 sm:h-6" />
             </button>
           )}
 
